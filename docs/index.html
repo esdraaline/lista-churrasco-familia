@@ -580,7 +580,8 @@
         text-transform: uppercase;
       }
 
-      .bill-field input {
+      .bill-field input,
+      .bill-field select {
         width: 100%;
         min-width: 0;
         height: 48px;
@@ -592,7 +593,8 @@
         color: var(--foreground);
       }
 
-      .bill-field input:focus {
+      .bill-field input:focus,
+      .bill-field select:focus {
         border-color: rgba(255, 106, 34, 0.75);
         box-shadow: 0 0 0 3px rgba(255, 106, 34, 0.18);
       }
@@ -963,14 +965,11 @@
         if (!saved) {
           return {
             total: "",
-            splitCount: "3",
+            splitCount: "",
             newName: "",
             newPaid: "",
-            participants: [
-              { id: "payer-josemar", name: "Josemar", paid: "" },
-              { id: "payer-valdemir", name: "Valdemir", paid: "" },
-              { id: "payer-alifer", name: "Alifer", paid: "" },
-            ],
+            mainPayerId: "",
+            participants: [],
           };
         }
 
@@ -978,18 +977,20 @@
           const parsed = JSON.parse(saved);
           return {
             total: parsed.total || "",
-            splitCount: parsed.splitCount || "3",
+            splitCount: parsed.splitCount || "",
             newName: "",
             newPaid: "",
+            mainPayerId: parsed.mainPayerId || "",
             participants: Array.isArray(parsed.participants) ? parsed.participants : [],
           };
         } catch {
           localStorage.removeItem(billStorageKey);
           return {
             total: "",
-            splitCount: "3",
+            splitCount: "",
             newName: "",
             newPaid: "",
+            mainPayerId: "",
             participants: [],
           };
         }
@@ -999,6 +1000,7 @@
         localStorage.setItem(billStorageKey, JSON.stringify({
           total: bill.total,
           splitCount: bill.splitCount,
+          mainPayerId: bill.mainPayerId,
           participants: bill.participants,
         }));
       }
@@ -1155,14 +1157,25 @@
             <div class="payer-form">
               <div class="bill-field">
                 <label for="new-payer-name">Novo pagante</label>
-                <input id="new-payer-name" placeholder="Ex.: Valdemir" value="${escapeHtml(bill.newName)}" />
+                <input id="new-payer-name" placeholder="Ex.: Nome" value="${escapeHtml(bill.newName)}" />
               </div>
               <div class="bill-field">
                 <label for="new-payer-paid">Quanto pagou?</label>
                 <input id="new-payer-paid" inputmode="decimal" placeholder="Ex.: 40,00" value="${escapeHtml(bill.newPaid)}" />
               </div>
               <button type="button" id="add-payer">Adicionar pagante</button>
-              <button type="button" class="secondary" id="main-payer">Quem pagou tudo?</button>
+              <div class="bill-field">
+                <label for="main-payer-select">Quem pagou tudo?</label>
+                <select id="main-payer-select">
+                  <option value="">Escolha o pagante</option>
+                  ${result.participants.map((participant) => `
+                    <option value="${escapeHtml(participant.id)}" ${bill.mainPayerId === participant.id ? "selected" : ""}>
+                      ${escapeHtml(participant.displayName)}
+                    </option>
+                  `).join("")}
+                </select>
+              </div>
+              <button type="button" class="secondary" id="main-payer">Colocar total nesse pagante</button>
             </div>
           </section>
 
@@ -1223,6 +1236,7 @@
           });
           row.querySelector(".payer-remove").addEventListener("click", () => {
             bill.participants = bill.participants.filter((participant) => participant.id !== id);
+            if (bill.mainPayerId === id) bill.mainPayerId = "";
             saveBill();
             renderBillPanel();
           });
@@ -1234,14 +1248,20 @@
         document.querySelector("#new-payer-paid")?.addEventListener("input", (event) => {
           bill.newPaid = event.target.value;
         });
+        document.querySelector("#main-payer-select")?.addEventListener("change", (event) => {
+          bill.mainPayerId = event.target.value;
+          saveBill();
+        });
         document.querySelector("#add-payer")?.addEventListener("click", () => {
           const name = bill.newName.trim();
           if (!name) return;
-          bill.participants.push({
+          const newPayer = {
             id: `payer-${Date.now()}`,
             name,
             paid: bill.newPaid.trim(),
-          });
+          };
+          bill.participants.push(newPayer);
+          if (!bill.mainPayerId) bill.mainPayerId = newPayer.id;
           bill.newName = "";
           bill.newPaid = "";
           saveBill();
@@ -1251,16 +1271,21 @@
         document.querySelector("#main-payer")?.addEventListener("click", () => {
           const result = calculateBill();
           if (bill.participants.length === 0) {
-            bill.participants.push({ id: `payer-${Date.now()}`, name: "Pagante principal", paid: "" });
+            document.querySelector("#status").textContent = "Adicione um pagante primeiro.";
+            return;
+          }
+          if (!bill.mainPayerId || !bill.participants.some((participant) => participant.id === bill.mainPayerId)) {
+            document.querySelector("#status").textContent = "Escolha quem pagou tudo.";
+            return;
           }
           const total = result.total || result.paidTotal;
           bill.participants = bill.participants.map((participant, index) => ({
             ...participant,
-            paid: index === 0 ? String(total.toFixed(2)).replace(".", ",") : "",
+            paid: participant.id === bill.mainPayerId ? String(total.toFixed(2)).replace(".", ",") : "",
           }));
           saveBill();
           renderBillPanel();
-          document.querySelector("#status").textContent = "Total colocado no primeiro pagante.";
+          document.querySelector("#status").textContent = "Total colocado no pagante escolhido.";
         });
         document.querySelector("#copy-settlement")?.addEventListener("click", async () => {
           const result = calculateBill();
@@ -1285,9 +1310,10 @@
         document.querySelector("#clear-bill")?.addEventListener("click", () => {
           bill = {
             total: "",
-            splitCount: "3",
+            splitCount: "",
             newName: "",
             newPaid: "",
+            mainPayerId: "",
             participants: [],
           };
           saveBill();

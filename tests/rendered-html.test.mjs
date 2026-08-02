@@ -57,10 +57,15 @@ test("GitHub Pages build contains grocery status tabs", async () => {
   assert.match(html, /unpostponeItem/);
   assert.match(html, /calculateBill/);
   assert.match(html, /Quem pagou tudo\?/);
+  assert.match(html, /Escolha o pagante/);
+  assert.match(html, /Colocar total nesse pagante/);
   assert.match(html, /Calcular divisão/);
   assert.match(html, /Usar soma dos pagamentos/);
   assert.match(html, /Acerto sugerido/);
   assert.match(html, /Desmarcar concluídos/);
+  assert.doesNotMatch(html, /payer-josemar|payer-valdemir|payer-alifer/);
+  assert.doesNotMatch(html, /Josemar|Valdemir|Alifer/);
+  assert.doesNotMatch(html, /splitCount:\s*"3"/);
   assert.doesNotMatch(html, /Rotina|Agenda/);
 });
 
