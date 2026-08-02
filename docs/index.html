@@ -304,7 +304,7 @@
 
       .tabs-card {
         display: grid;
-        grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.96fr) minmax(0, 0.86fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
         margin-top: 14px;
         padding: 10px;
@@ -358,6 +358,10 @@
         background: #fff2dc;
         font-size: 11px;
         font-weight: 900;
+      }
+
+      [hidden] {
+        display: none !important;
       }
 
       .category {
@@ -518,6 +522,205 @@
         font-size: 18px;
       }
 
+      .bill-panel {
+        display: grid;
+        gap: 14px;
+        margin-top: 14px;
+      }
+
+      .bill-card {
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 16px;
+        background: var(--panel);
+        box-shadow: 0 18px 52px rgba(0, 0, 0, 0.2);
+      }
+
+      .bill-card h2,
+      .bill-card h3 {
+        margin: 0;
+        color: #fff7ea;
+        font-family: Georgia, "Times New Roman", serif;
+        line-height: 1.05;
+      }
+
+      .bill-card h2 {
+        font-size: 25px;
+      }
+
+      .bill-card h3 {
+        font-size: 20px;
+      }
+
+      .bill-card p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .bill-grid,
+      .payer-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .bill-field {
+        display: grid;
+        gap: 7px;
+      }
+
+      .bill-field label {
+        color: #fff2dc;
+        font-size: 12px;
+        font-weight: 900;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .bill-field input {
+        width: 100%;
+        min-width: 0;
+        height: 48px;
+        border: 1px solid rgba(255, 246, 232, 0.14);
+        border-radius: 14px;
+        outline: none;
+        padding: 0 13px;
+        background: rgba(15, 12, 11, 0.5);
+        color: var(--foreground);
+      }
+
+      .bill-field input:focus {
+        border-color: rgba(255, 106, 34, 0.75);
+        box-shadow: 0 0 0 3px rgba(255, 106, 34, 0.18);
+      }
+
+      .bill-buttons {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .bill-buttons button,
+      .payer-form button,
+      .settlement-copy {
+        min-height: 48px;
+        border: 0;
+        border-radius: 14px;
+        color: #1b110c;
+        background: #fff2dc;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .bill-buttons .secondary,
+      .payer-form .secondary {
+        border: 1px solid rgba(255, 246, 232, 0.16);
+        color: var(--foreground);
+        background: rgba(255, 246, 232, 0.08);
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .summary-tile {
+        min-width: 0;
+        border: 1px solid rgba(255, 246, 232, 0.12);
+        border-radius: 16px;
+        padding: 12px 8px;
+        background: rgba(15, 12, 11, 0.35);
+      }
+
+      .summary-tile strong,
+      .summary-tile span {
+        display: block;
+      }
+
+      .summary-tile strong {
+        color: #ffffff;
+        font-size: 16px;
+        overflow-wrap: anywhere;
+      }
+
+      .summary-tile span {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .payer-list,
+      .settlement-list {
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .payer-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 112px 44px;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .payer-row input {
+        min-width: 0;
+        height: 46px;
+        border: 1px solid rgba(255, 246, 232, 0.14);
+        border-radius: 14px;
+        outline: none;
+        padding: 0 11px;
+        background: rgba(15, 12, 11, 0.45);
+        color: var(--foreground);
+      }
+
+      .payer-row button {
+        width: 44px;
+        height: 44px;
+        border: 1px solid rgba(255, 246, 232, 0.14);
+        border-radius: 999px;
+        color: var(--foreground);
+        background: rgba(255, 246, 232, 0.08);
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .balance-row,
+      .settlement-row {
+        display: grid;
+        gap: 4px;
+        border-radius: 16px;
+        padding: 12px;
+        background: rgba(255, 246, 232, 0.06);
+      }
+
+      .balance-row strong,
+      .settlement-row strong {
+        color: #ffffff;
+      }
+
+      .balance-row span,
+      .settlement-row span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .balance-row.receive strong {
+        color: #9bd85f;
+      }
+
+      .balance-row.pay strong {
+        color: #ffbd8f;
+      }
+
       .actions {
         position: sticky;
         bottom: 0;
@@ -571,6 +774,15 @@
         .add-form button {
           grid-column: auto;
         }
+
+        .bill-grid,
+        .payer-form {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        }
+
+        .payer-form button {
+          align-self: end;
+        }
       }
     </style>
   </head>
@@ -595,7 +807,7 @@
         <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
       </section>
 
-      <form class="add-form" id="add-form">
+      <form class="add-form shopping-only" id="add-form">
         <label for="new-product">Adicionar produto</label>
         <div class="add-form__row">
           <input id="new-product" placeholder="Ex.: pão de alho" autocomplete="off" />
@@ -620,11 +832,17 @@
           <span class="tab-label">Adiadas</span>
           <span class="tab-badge" id="badge-adiadas">0</span>
         </button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="false" data-tab="conta">
+          <span class="tab-emoji" aria-hidden="true">💸</span>
+          <span class="tab-label">Dividir conta</span>
+          <span class="tab-badge" id="badge-conta">R$</span>
+        </button>
       </nav>
 
       <div id="categories" role="tabpanel" aria-live="polite"></div>
+      <div id="bill-panel" class="bill-panel" role="tabpanel" aria-live="polite" hidden></div>
 
-      <div class="actions" aria-label="Ações da lista">
+      <div class="actions shopping-only" aria-label="Ações da lista">
         <button type="button" id="share-button">Compartilhar</button>
         <button type="button" class="secondary" id="reset-button">Desmarcar concluídos</button>
       </div>
@@ -638,10 +856,12 @@
       const storageKey = "lista-churrasco-github-pages-v2";
       const legacyStorageKey = "lista-churrasco-github-pages-v1";
       const tabStorageKey = "lista-churrasco-active-tab-v1";
+      const billStorageKey = "lista-churrasco-bill-v1";
       const tabLabels = {
         ativas: "Minhas compras",
         concluidas: "Compras concluídas",
         adiadas: "Compras adiadas",
+        conta: "Dividir conta",
       };
 
       const categories = {
@@ -703,6 +923,7 @@
       }));
 
       let items = restoreItems();
+      let bill = restoreBill();
       let activeTab = localStorage.getItem(tabStorageKey) || "ativas";
       if (!tabLabels[activeTab]) activeTab = "ativas";
 
@@ -737,8 +958,126 @@
         localStorage.setItem(storageKey, JSON.stringify(items));
       }
 
+      function restoreBill() {
+        const saved = localStorage.getItem(billStorageKey);
+        if (!saved) {
+          return {
+            total: "",
+            splitCount: "3",
+            newName: "",
+            newPaid: "",
+            participants: [
+              { id: "payer-josemar", name: "Josemar", paid: "" },
+              { id: "payer-valdemir", name: "Valdemir", paid: "" },
+              { id: "payer-alifer", name: "Alifer", paid: "" },
+            ],
+          };
+        }
+
+        try {
+          const parsed = JSON.parse(saved);
+          return {
+            total: parsed.total || "",
+            splitCount: parsed.splitCount || "3",
+            newName: "",
+            newPaid: "",
+            participants: Array.isArray(parsed.participants) ? parsed.participants : [],
+          };
+        } catch {
+          localStorage.removeItem(billStorageKey);
+          return {
+            total: "",
+            splitCount: "3",
+            newName: "",
+            newPaid: "",
+            participants: [],
+          };
+        }
+      }
+
+      function saveBill() {
+        localStorage.setItem(billStorageKey, JSON.stringify({
+          total: bill.total,
+          splitCount: bill.splitCount,
+          participants: bill.participants,
+        }));
+      }
+
+      function parseMoney(value) {
+        const clean = String(value || "")
+          .replace(/[^\d,.-]/g, "")
+          .trim();
+        if (!clean) return 0;
+        const normalized = clean.includes(",")
+          ? clean.replace(/\./g, "").replace(",", ".")
+          : clean;
+        const number = Number.parseFloat(normalized);
+        return Number.isFinite(number) ? number : 0;
+      }
+
+      function formatMoney(value) {
+        return value.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+      }
+
+      function calculateBill() {
+        const participants = bill.participants.map((participant, index) => ({
+          ...participant,
+          displayName: participant.name.trim() || `Pagante ${index + 1}`,
+          paidValue: parseMoney(participant.paid),
+        }));
+        const paidTotal = participants.reduce((sum, participant) => sum + participant.paidValue, 0);
+        const typedTotal = parseMoney(bill.total);
+        const total = typedTotal > 0 ? typedTotal : paidTotal;
+        const splitCount = Math.max(1, Math.round(Number.parseFloat(String(bill.splitCount).replace(",", ".")) || participants.length || 1));
+        const share = total / splitCount;
+        const missingPayers = Math.max(0, splitCount - participants.length);
+        const balances = participants.map((participant) => ({
+          ...participant,
+          balance: participant.paidValue - share,
+        }));
+        const debtors = balances
+          .filter((participant) => participant.balance < -0.005)
+          .map((participant) => ({ ...participant, amount: Math.abs(participant.balance) }));
+        const creditors = balances
+          .filter((participant) => participant.balance > 0.005)
+          .map((participant) => ({ ...participant, amount: participant.balance }));
+        const settlements = [];
+        let debtorIndex = 0;
+        let creditorIndex = 0;
+
+        while (debtors[debtorIndex] && creditors[creditorIndex]) {
+          const amount = Math.min(debtors[debtorIndex].amount, creditors[creditorIndex].amount);
+          if (amount > 0.005) {
+            settlements.push({
+              from: debtors[debtorIndex].displayName,
+              to: creditors[creditorIndex].displayName,
+              amount,
+            });
+          }
+          debtors[debtorIndex].amount -= amount;
+          creditors[creditorIndex].amount -= amount;
+          if (debtors[debtorIndex].amount <= 0.005) debtorIndex += 1;
+          if (creditors[creditorIndex].amount <= 0.005) creditorIndex += 1;
+        }
+
+        return {
+          participants,
+          paidTotal,
+          typedTotal,
+          total,
+          splitCount,
+          share,
+          missingPayers,
+          balances,
+          settlements,
+        };
+      }
+
       function escapeHtml(value) {
-        return value.replace(/[&<>"']/g, (char) => ({
+        return String(value || "").replace(/[&<>"']/g, (char) => ({
           "&": "&amp;",
           "<": "&lt;",
           ">": "&gt;",
@@ -747,12 +1086,234 @@
         })[char]);
       }
 
+      function renderBillPanel() {
+        const panel = document.querySelector("#bill-panel");
+        const result = calculateBill();
+        const balancesMarkup = result.balances.length === 0
+          ? `<div class="empty-state"><strong>Nenhum pagante ainda</strong><span>Adicione quem participou da conta.</span></div>`
+          : result.balances.map((participant) => {
+              const statusClass = participant.balance > 0.005 ? "receive" : participant.balance < -0.005 ? "pay" : "";
+              const statusText = participant.balance > 0.005
+                ? `tem a receber ${formatMoney(participant.balance)}`
+                : participant.balance < -0.005
+                ? `ainda deve ${formatMoney(Math.abs(participant.balance))}`
+                : "está certo na conta";
+              return `
+                <div class="balance-row ${statusClass}">
+                  <strong>${escapeHtml(participant.displayName)}</strong>
+                  <span>Pagou ${formatMoney(participant.paidValue)} · ${statusText}</span>
+                </div>
+              `;
+            }).join("");
+        const settlementsMarkup = result.settlements.length === 0
+          ? `<div class="settlement-row"><strong>Nenhum acerto necessário</strong><span>Quando houver diferença, eu mostro quem paga quem.</span></div>`
+          : result.settlements.map((settlement) => `
+              <div class="settlement-row">
+                <strong>${escapeHtml(settlement.from)} paga ${formatMoney(settlement.amount)} para ${escapeHtml(settlement.to)}</strong>
+                <span>Esse pagamento equilibra a divisão.</span>
+              </div>
+            `).join("");
+
+        panel.innerHTML = `
+          <section class="bill-card">
+            <h2>Dividir conta</h2>
+            <p>Informe o total gasto e quantas pessoas ou famílias vão dividir. Se deixar o total vazio, uso a soma do que cada pagante colocou.</p>
+            <div class="bill-grid">
+              <div class="bill-field">
+                <label for="bill-total">Valor total gasto</label>
+                <input id="bill-total" inputmode="decimal" placeholder="Ex.: 340,00" value="${escapeHtml(bill.total)}" />
+              </div>
+              <div class="bill-field">
+                <label for="bill-split-count">Quantas pessoas/famílias?</label>
+                <input id="bill-split-count" inputmode="numeric" placeholder="Ex.: 3" value="${escapeHtml(bill.splitCount)}" />
+              </div>
+            </div>
+            <div class="summary-grid" aria-label="Resumo da divisão">
+              <div class="summary-tile"><strong>${formatMoney(result.total)}</strong><span>Total</span></div>
+              <div class="summary-tile"><strong>${result.splitCount}</strong><span>Dividindo</span></div>
+              <div class="summary-tile"><strong>${formatMoney(result.share)}</strong><span>Por pessoa</span></div>
+            </div>
+            <div class="bill-buttons">
+              <button type="button" id="recalculate-bill">Calcular divisão</button>
+              <button type="button" class="secondary" id="fill-paid-total">Usar soma dos pagamentos</button>
+            </div>
+            ${result.missingPayers > 0 ? `<p>Faltam ${result.missingPayers} pessoa(s)/família(s) sem nome. Elas entram na conta, mas não geram acerto nominal.</p>` : ""}
+          </section>
+
+          <section class="bill-card">
+            <h3>Quem pagou</h3>
+            <p>Coloque cada pagante e quanto ele já desembolsou.</p>
+            <div class="payer-list">
+              ${result.participants.map((participant) => `
+                <div class="payer-row" data-payer-id="${escapeHtml(participant.id)}">
+                  <input class="payer-name" aria-label="Nome do pagante" value="${escapeHtml(participant.name)}" placeholder="Nome" />
+                  <input class="payer-paid" aria-label="Valor pago" inputmode="decimal" value="${escapeHtml(participant.paid)}" placeholder="R$ pago" />
+                  <button type="button" class="payer-remove" aria-label="Remover ${escapeHtml(participant.displayName)}">×</button>
+                </div>
+              `).join("")}
+            </div>
+            <div class="payer-form">
+              <div class="bill-field">
+                <label for="new-payer-name">Novo pagante</label>
+                <input id="new-payer-name" placeholder="Ex.: Valdemir" value="${escapeHtml(bill.newName)}" />
+              </div>
+              <div class="bill-field">
+                <label for="new-payer-paid">Quanto pagou?</label>
+                <input id="new-payer-paid" inputmode="decimal" placeholder="Ex.: 40,00" value="${escapeHtml(bill.newPaid)}" />
+              </div>
+              <button type="button" id="add-payer">Adicionar pagante</button>
+              <button type="button" class="secondary" id="main-payer">Quem pagou tudo?</button>
+            </div>
+          </section>
+
+          <section class="bill-card">
+            <h3>Resultado</h3>
+            <p>Total pago informado: ${formatMoney(result.paidTotal)}. Cada pessoa/família deve participar com ${formatMoney(result.share)}.</p>
+            <div class="settlement-list">${balancesMarkup}</div>
+          </section>
+
+          <section class="bill-card">
+            <h3>Acerto sugerido</h3>
+            <div class="settlement-list">${settlementsMarkup}</div>
+            <div class="bill-buttons">
+              <button type="button" id="copy-settlement">Copiar acerto</button>
+              <button type="button" class="secondary" id="clear-bill">Limpar divisão</button>
+            </div>
+          </section>
+        `;
+
+        bindBillEvents();
+      }
+
+      function bindBillEvents() {
+        const totalInput = document.querySelector("#bill-total");
+        const splitInput = document.querySelector("#bill-split-count");
+        totalInput?.addEventListener("input", (event) => {
+          bill.total = event.target.value;
+          saveBill();
+        });
+        splitInput?.addEventListener("input", (event) => {
+          bill.splitCount = event.target.value;
+          saveBill();
+        });
+        document.querySelector("#recalculate-bill")?.addEventListener("click", () => {
+          renderBillPanel();
+          document.querySelector("#status").textContent = "Divisão calculada.";
+        });
+        document.querySelector("#fill-paid-total")?.addEventListener("click", () => {
+          bill.total = String(calculateBill().paidTotal.toFixed(2)).replace(".", ",");
+          saveBill();
+          renderBillPanel();
+          document.querySelector("#status").textContent = "Total preenchido pela soma dos pagamentos.";
+        });
+
+        document.querySelectorAll(".payer-row").forEach((row) => {
+          const id = row.dataset.payerId;
+          row.querySelector(".payer-name").addEventListener("input", (event) => {
+            bill.participants = bill.participants.map((participant) =>
+              participant.id === id ? { ...participant, name: event.target.value } : participant
+            );
+            saveBill();
+          });
+          row.querySelector(".payer-paid").addEventListener("input", (event) => {
+            bill.participants = bill.participants.map((participant) =>
+              participant.id === id ? { ...participant, paid: event.target.value } : participant
+            );
+            saveBill();
+          });
+          row.querySelector(".payer-remove").addEventListener("click", () => {
+            bill.participants = bill.participants.filter((participant) => participant.id !== id);
+            saveBill();
+            renderBillPanel();
+          });
+        });
+
+        document.querySelector("#new-payer-name")?.addEventListener("input", (event) => {
+          bill.newName = event.target.value;
+        });
+        document.querySelector("#new-payer-paid")?.addEventListener("input", (event) => {
+          bill.newPaid = event.target.value;
+        });
+        document.querySelector("#add-payer")?.addEventListener("click", () => {
+          const name = bill.newName.trim();
+          if (!name) return;
+          bill.participants.push({
+            id: `payer-${Date.now()}`,
+            name,
+            paid: bill.newPaid.trim(),
+          });
+          bill.newName = "";
+          bill.newPaid = "";
+          saveBill();
+          renderBillPanel();
+          document.querySelector("#status").textContent = "Pagante adicionado.";
+        });
+        document.querySelector("#main-payer")?.addEventListener("click", () => {
+          const result = calculateBill();
+          if (bill.participants.length === 0) {
+            bill.participants.push({ id: `payer-${Date.now()}`, name: "Pagante principal", paid: "" });
+          }
+          const total = result.total || result.paidTotal;
+          bill.participants = bill.participants.map((participant, index) => ({
+            ...participant,
+            paid: index === 0 ? String(total.toFixed(2)).replace(".", ",") : "",
+          }));
+          saveBill();
+          renderBillPanel();
+          document.querySelector("#status").textContent = "Total colocado no primeiro pagante.";
+        });
+        document.querySelector("#copy-settlement")?.addEventListener("click", async () => {
+          const result = calculateBill();
+          const lines = [
+            "Divisão do churrasco:",
+            `Total: ${formatMoney(result.total)}`,
+            `Dividindo por: ${result.splitCount}`,
+            `Cada um: ${formatMoney(result.share)}`,
+            "",
+            "Acerto:",
+            ...(result.settlements.length
+              ? result.settlements.map((settlement) => `${settlement.from} paga ${formatMoney(settlement.amount)} para ${settlement.to}`)
+              : ["Nenhum acerto necessário"]),
+          ];
+          try {
+            await navigator.clipboard.writeText(lines.join("\n"));
+            document.querySelector("#status").textContent = "Acerto copiado.";
+          } catch {
+            document.querySelector("#status").textContent = "Não consegui copiar agora.";
+          }
+        });
+        document.querySelector("#clear-bill")?.addEventListener("click", () => {
+          bill = {
+            total: "",
+            splitCount: "3",
+            newName: "",
+            newPaid: "",
+            participants: [],
+          };
+          saveBill();
+          renderBillPanel();
+          document.querySelector("#status").textContent = "Divisão limpa.";
+        });
+      }
+
       function render() {
         const categoryRoot = document.querySelector("#categories");
+        const billPanel = document.querySelector("#bill-panel");
         categoryRoot.innerHTML = "";
         document.querySelectorAll(".tab-btn").forEach((button) => {
           button.setAttribute("aria-selected", String(button.dataset.tab === activeTab));
         });
+        document.querySelectorAll(".shopping-only").forEach((element) => {
+          element.hidden = activeTab === "conta";
+        });
+        categoryRoot.hidden = activeTab === "conta";
+        billPanel.hidden = activeTab !== "conta";
+
+        if (activeTab === "conta") {
+          renderBillPanel();
+          updateProgress();
+          return;
+        }
 
         const visibleItems = items.filter((item) => {
           if (activeTab === "concluidas") return item.checked;
@@ -861,6 +1422,7 @@
         document.querySelector("#badge-ativas").textContent = active;
         document.querySelector("#badge-concluidas").textContent = checked;
         document.querySelector("#badge-adiadas").textContent = postponed;
+        document.querySelector("#badge-conta").textContent = formatMoney(calculateBill().share).replace("R$", "").trim();
         document.querySelector("#progress-label").textContent = `${checked} de ${total}`;
         document.querySelector("#progress-fill").style.width = `${progress}%`;
       }
