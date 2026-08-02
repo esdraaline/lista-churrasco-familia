@@ -167,6 +167,15 @@ const baseItems: Item[] = [
 
 const storageKey = "lista-churrasco-premium-v2";
 const eventStorageKey = "rachides-event-title-v1";
+let idSequence = 0;
+
+function createUniqueId(prefix: string) {
+  idSequence += 1;
+  if (globalThis.crypto?.randomUUID) {
+    return `${prefix}-${globalThis.crypto.randomUUID()}`;
+  }
+  return `${prefix}-${Date.now().toString(36)}-${idSequence.toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+}
 
 function mergeStoredItems(storedItems: Item[]) {
   const storedById = new Map(storedItems.map((item) => [item.id, item]));
@@ -237,7 +246,7 @@ export default function Home() {
     setItems((current) => [
       ...current,
       {
-        id: `extra-${Date.now()}`,
+        id: createUniqueId("extra"),
         name,
         qty: newQty.trim() || "a combinar",
         icon: "🛒",
