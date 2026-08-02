@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#150f0d" />
+    <title>Lista do Churrasco</title>
+    <meta
+      name="description"
+      content="Checklist mobile premium para organizar o churrasco da familia."
+    />
+    <meta property="og:title" content="Lista do Churrasco" />
+    <meta
+      property="og:description"
+      content="Checklist mobile premium para organizar o churrasco da familia."
+    />
+    <meta
+      property="og:url"
+      content="https://esdraaline.github.io/lista-churrasco-familia/"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta
+      property="og:image"
+      content="https://esdraaline.github.io/lista-churrasco-familia/og.png"
+    />
+    <meta property="og:image:width" content="1402" />
+    <meta property="og:image:height" content="1122" />
+    <meta property="og:image:alt" content="Familia em churrasco no quintal" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Lista do Churrasco" />
+    <meta
+      name="twitter:description"
+      content="Checklist mobile premium para organizar o churrasco da familia."
+    />
+    <meta
+      name="twitter:image"
+      content="https://esdraaline.github.io/lista-churrasco-familia/og.png"
+    />
+    <link rel="preload" as="image" href="./og.png" />
+    <style>
+      :root {
+        --background: #150f0d;
+        --foreground: #fff6e8;
+        --muted: #d8c5ac;
+        --panel: rgba(45, 33, 27, 0.9);
+        --panel-strong: rgba(59, 43, 34, 0.96);
+        --line: rgba(255, 246, 232, 0.14);
+        --fire: #ff6a22;
+        --gold: #f4bd37;
+        --green: #79d46a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--background);
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        background:
+          radial-gradient(circle at 18% 0%, rgba(255, 106, 34, 0.28), transparent 30rem),
+          radial-gradient(circle at 90% 8%, rgba(121, 212, 106, 0.18), transparent 24rem),
+          linear-gradient(180deg, #21130f 0%, #150f0d 44%, #0f0c0b 100%);
+        color: var(--foreground);
+        font-family:
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .shell {
+        width: min(100%, 720px);
+        margin: 0 auto;
+        padding: 18px 14px 34px;
+      }
+
+      .hero {
+        position: relative;
+        min-height: 360px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        overflow: hidden;
+        border: 1px solid rgba(255, 246, 232, 0.16);
+        border-radius: 28px;
+        padding: 28px 22px 22px;
+        background:
+          linear-gradient(180deg, rgba(21, 15, 13, 0.1), rgba(21, 15, 13, 0.88)),
+          repeating-linear-gradient(
+            115deg,
+            rgba(255, 246, 232, 0.08) 0 2px,
+            transparent 2px 18px
+          ),
+          linear-gradient(135deg, #5e2311 0%, #251811 52%, #19321f 100%);
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+      }
+
+      .hero::after {
+        position: absolute;
+        inset: auto -20% -35% -20%;
+        height: 220px;
+        background:
+          radial-gradient(circle at 40% 50%, rgba(255, 106, 34, 0.62), transparent 38%),
+          radial-gradient(circle at 58% 46%, rgba(244, 189, 55, 0.45), transparent 34%);
+        filter: blur(14px);
+        content: "";
+        pointer-events: none;
+      }
+
+      .eyebrow,
+      .hero h1,
+      .hero p,
+      .hero__stats {
+        position: relative;
+        z-index: 1;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        margin-bottom: 12px;
+        color: #ffd9bd;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .hero h1 {
+        max-width: 100%;
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(40px, 13vw, 76px);
+        font-weight: 800;
+        line-height: 0.95;
+      }
+
+      .hero p {
+        max-width: 30rem;
+        margin: 16px 0 0;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.45;
+      }
+
+      .hero__stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 24px;
+      }
+
+      .hero__stats div {
+        min-width: 0;
+        border: 1px solid rgba(255, 246, 232, 0.12);
+        border-radius: 16px;
+        padding: 12px 10px;
+        background: rgba(15, 12, 11, 0.42);
+        backdrop-filter: blur(10px);
+      }
+
+      .hero__stats strong,
+      .hero__stats span {
+        display: block;
+      }
+
+      .hero__stats strong {
+        color: #ffffff;
+        font-size: 24px;
+        line-height: 1;
+      }
+
+      .hero__stats span {
+        margin-top: 5px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+
+      .progress-card,
+      .add-form,
+      .category {
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: var(--panel);
+        box-shadow: 0 18px 52px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(18px);
+      }
+
+      .progress-card {
+        margin-top: 14px;
+        padding: 16px;
+      }
+
+      .progress-card > div:first-child {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .progress-card span {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .progress-card strong {
+        font-size: 14px;
+      }
+
+      .progress-track {
+        height: 9px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 246, 232, 0.1);
+      }
+
+      .progress-fill {
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, var(--fire), var(--gold), var(--green));
+        transition: width 220ms ease;
+      }
+
+      .add-form {
+        margin-top: 14px;
+        padding: 16px;
+      }
+
+      .add-form label {
+        display: block;
+        margin-bottom: 10px;
+        color: #fff2dc;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .add-form__row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 82px;
+        gap: 8px;
+      }
+
+      .add-form input {
+        min-width: 0;
+        height: 48px;
+        border: 1px solid rgba(255, 246, 232, 0.14);
+        border-radius: 14px;
+        outline: none;
+        padding: 0 13px;
+        background: rgba(15, 12, 11, 0.5);
+        color: var(--foreground);
+      }
+
+      .add-form input:focus {
+        border-color: rgba(255, 106, 34, 0.75);
+        box-shadow: 0 0 0 3px rgba(255, 106, 34, 0.18);
+      }
+
+      .add-form input::placeholder {
+        color: rgba(216, 197, 172, 0.72);
+      }
+
+      .add-form button {
+        grid-column: 1 / -1;
+        height: 50px;
+        border: 0;
+        border-radius: 15px;
+        color: #1b110c;
+        background: linear-gradient(135deg, var(--gold), var(--fire));
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .category {
+        margin-top: 14px;
+        overflow: hidden;
+      }
+
+      .category__header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+        border-left: 5px solid var(--accent);
+        background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 18%, transparent), transparent);
+      }
+
+      .category__icon {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        flex: 0 0 auto;
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--accent) 24%, transparent);
+        font-size: 22px;
+      }
+
+      .category h2 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .category p {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .items {
+        display: grid;
+        gap: 6px;
+        padding: 10px;
+      }
+
+      .item {
+        display: grid;
+        grid-template-columns: 28px 30px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 56px;
+        border: 0;
+        border-radius: 16px;
+        padding: 9px 10px;
+        color: var(--foreground);
+        background: transparent;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .item:active,
+      .item:focus-visible {
+        background: var(--panel-strong);
+      }
+
+      .check {
+        display: grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border: 2px solid var(--accent);
+        border-radius: 9px;
+        color: #16100d;
+        background: transparent;
+        font-size: 16px;
+        font-weight: 900;
+      }
+
+      .item__icon {
+        font-size: 21px;
+        text-align: center;
+      }
+
+      .item__name {
+        min-width: 0;
+        overflow-wrap: anywhere;
+        font-size: 16px;
+        font-weight: 750;
+      }
+
+      .item__qty {
+        max-width: 112px;
+        overflow-wrap: anywhere;
+        border-radius: 999px;
+        padding: 6px 10px;
+        color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 16%, transparent);
+        font-size: 13px;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .item--checked .check {
+        background: var(--accent);
+      }
+
+      .item--checked .item__name {
+        color: rgba(216, 197, 172, 0.72);
+        text-decoration: line-through;
+        text-decoration-color: var(--accent);
+        text-decoration-thickness: 2px;
+      }
+
+      .item--checked .item__qty,
+      .item--checked .item__icon {
+        opacity: 0.58;
+      }
+
+      .actions {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin: 18px -2px 0;
+        padding: 12px 2px calc(12px + env(safe-area-inset-bottom));
+        background: linear-gradient(180deg, transparent, rgba(15, 12, 11, 0.95) 24%);
+      }
+
+      .actions button {
+        min-height: 50px;
+        border: 0;
+        border-radius: 15px;
+        color: #1b110c;
+        background: #fff2dc;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .actions .secondary {
+        border: 1px solid rgba(255, 246, 232, 0.16);
+        color: var(--foreground);
+        background: rgba(255, 246, 232, 0.08);
+      }
+
+      .status {
+        min-height: 20px;
+        margin: 8px 4px 0;
+        color: var(--muted);
+        font-size: 13px;
+        text-align: center;
+      }
+
+      @media (min-width: 640px) {
+        .shell {
+          padding-top: 28px;
+        }
+
+        .hero {
+          min-height: 420px;
+          padding: 36px 34px 28px;
+        }
+
+        .add-form__row {
+          grid-template-columns: minmax(0, 1fr) 110px 136px;
+        }
+
+        .add-form button {
+          grid-column: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="eyebrow"><span aria-hidden="true">🔥</span> Churrasco de domingo</div>
+        <h1 id="page-title">Lista do Churrasco</h1>
+        <p>9 pessoas · 07 adultos + 02 crianças · pronta para mostrar no celular.</p>
+        <div class="hero__stats" aria-label="Resumo da lista">
+          <div><strong id="total-count">14</strong><span>itens</span></div>
+          <div><strong id="checked-count">0</strong><span>comprados</span></div>
+          <div><strong id="missing-count">14</strong><span>faltando</span></div>
+        </div>
+      </section>
+
+      <section class="progress-card" aria-label="Progresso da compra">
+        <div>
+          <span>Progresso</span>
+          <strong id="progress-label">0 de 14</strong>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+      </section>
+
+      <form class="add-form" id="add-form">
+        <label for="new-product">Adicionar produto</label>
+        <div class="add-form__row">
+          <input id="new-product" placeholder="Ex.: pão de alho" autocomplete="off" />
+          <input id="new-qty" class="qty-input" aria-label="Quantidade" placeholder="Qtd." autocomplete="off" />
+          <button type="submit">Adicionar</button>
+        </div>
+      </form>
+
+      <div id="categories"></div>
+
+      <div class="actions" aria-label="Ações da lista">
+        <button type="button" id="share-button">Compartilhar</button>
+        <button type="button" class="secondary" id="reset-button">Limpar marcações</button>
+      </div>
+
+      <p class="status" id="status" role="status">
+        Toque nos itens para marcar o que já foi comprado.
+      </p>
+    </main>
+
+    <script>
+      const storageKey = "lista-churrasco-github-pages-v1";
+
+      const categories = {
+        carnes: {
+          title: "Carnes & Fogo",
+          subtitle: "o principal da brasa",
+          icon: "🥩",
+          accent: "#ff6a22",
+        },
+        bebidas: {
+          title: "Bebidas & Tempero",
+          subtitle: "gelado, cítrico e certeiro",
+          icon: "🍹",
+          accent: "#9bd85f",
+        },
+        salada: {
+          title: "Salada",
+          subtitle: "alface e tomate já garantidos",
+          icon: "🥗",
+          accent: "#55b978",
+        },
+        sobremesa: {
+          title: "Sobremesa",
+          subtitle: "mousse de maracujá com chocolate",
+          icon: "🍮",
+          accent: "#f4bd37",
+        },
+        extras: {
+          title: "Itens adicionados",
+          subtitle: "o que a família lembrar na hora",
+          icon: "➕",
+          accent: "#6fb7ff",
+        },
+      };
+
+      const baseItems = [
+        ["contra-file", "Contra-filé", "1,5 kg", "🍖", "carnes"],
+        ["cupim", "Cupim", "1,5 kg", "🍖", "carnes"],
+        ["linguica", "Linguiça Perdigão", "1 kg", "🌭", "carnes"],
+        ["carvao", "Carvão", "4 kg", "⚫", "carnes"],
+        ["limao", "Limão", "8 un.", "🍋", "bebidas"],
+        ["coca-zero", "Coca-Cola Zero", "2 L", "🥤", "bebidas"],
+        ["h2oh", "H2OH", "2 L", "💧", "bebidas"],
+        ["guarana", "Guaraná", "2 L", "🥤", "bebidas"],
+        ["alface", "Alface", "2 pés", "🥬", "salada"],
+        ["tomate", "Tomate", "5 un.", "🍅", "salada"],
+        ["maracuja", "Maracujá", "4 un.", "💛", "sobremesa"],
+        ["leite-condensado", "Leite condensado", "2 latas", "🥛", "sobremesa"],
+        ["creme-leite", "Creme de leite", "2 latas", "🍶", "sobremesa"],
+        ["chocolate-amargo", "Chocolate amargo", "200 g", "🍫", "sobremesa"],
+      ].map(([id, name, qty, icon, category]) => ({
+        id,
+        name,
+        qty,
+        icon,
+        category,
+        checked: false,
+      }));
+
+      let items = restoreItems();
+
+      function restoreItems() {
+        const saved = localStorage.getItem(storageKey);
+        if (!saved) return [...baseItems];
+
+        try {
+          const parsed = JSON.parse(saved);
+          const savedById = new Map(parsed.map((item) => [item.id, item]));
+          const restoredBase = baseItems.map((item) => ({
+            ...item,
+            checked: savedById.get(item.id)?.checked || false,
+          }));
+          const extras = parsed.filter((item) => !baseItems.some((baseItem) => baseItem.id === item.id));
+          return [...restoredBase, ...extras];
+        } catch {
+          localStorage.removeItem(storageKey);
+          return [...baseItems];
+        }
+      }
+
+      function saveItems() {
+        localStorage.setItem(storageKey, JSON.stringify(items));
+      }
+
+      function escapeHtml(value) {
+        return value.replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[char]);
+      }
+
+      function render() {
+        const categoryRoot = document.querySelector("#categories");
+        categoryRoot.innerHTML = "";
+
+        Object.entries(categories).forEach(([categoryId, category]) => {
+          const categoryItems = items.filter((item) => item.category === categoryId);
+          if (categoryItems.length === 0) return;
+
+          const section = document.createElement("section");
+          section.className = "category";
+          section.style.setProperty("--accent", category.accent);
+          section.innerHTML = `
+            <header class="category__header">
+              <div class="category__icon">${category.icon}</div>
+              <div>
+                <h2>${category.title}</h2>
+                <p>${category.subtitle}</p>
+              </div>
+            </header>
+            <div class="items">
+              ${categoryItems.map((item) => `
+                <button
+                  class="item ${item.checked ? "item--checked" : ""}"
+                  type="button"
+                  aria-pressed="${item.checked}"
+                  data-id="${escapeHtml(item.id)}"
+                >
+                  <span class="check" aria-hidden="true">${item.checked ? "✓" : ""}</span>
+                  <span class="item__icon" aria-hidden="true">${item.icon}</span>
+                  <span class="item__name">${escapeHtml(item.name)}</span>
+                  <span class="item__qty">${escapeHtml(item.qty)}</span>
+                </button>
+              `).join("")}
+            </div>
+          `;
+
+          categoryRoot.appendChild(section);
+        });
+
+        document.querySelectorAll(".item").forEach((button) => {
+          button.addEventListener("click", () => toggleItem(button.dataset.id));
+        });
+
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const checked = items.filter((item) => item.checked).length;
+        const total = items.length;
+        const missing = total - checked;
+        const progress = total ? Math.round((checked / total) * 100) : 0;
+
+        document.querySelector("#total-count").textContent = total;
+        document.querySelector("#checked-count").textContent = checked;
+        document.querySelector("#missing-count").textContent = missing;
+        document.querySelector("#progress-label").textContent = `${checked} de ${total}`;
+        document.querySelector("#progress-fill").style.width = `${progress}%`;
+      }
+
+      function toggleItem(id) {
+        items = items.map((item) => item.id === id ? { ...item, checked: !item.checked } : item);
+        saveItems();
+        render();
+      }
+
+      document.querySelector("#add-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const nameInput = document.querySelector("#new-product");
+        const qtyInput = document.querySelector("#new-qty");
+        const name = nameInput.value.trim();
+        if (!name) return;
+
+        items.push({
+          id: `extra-${Date.now()}`,
+          name,
+          qty: qtyInput.value.trim() || "a combinar",
+          icon: "🛒",
+          category: "extras",
+          checked: false,
+        });
+
+        nameInput.value = "";
+        qtyInput.value = "";
+        saveItems();
+        render();
+        document.querySelector("#status").textContent = "Item adicionado.";
+      });
+
+      document.querySelector("#reset-button").addEventListener("click", () => {
+        items = [...baseItems];
+        saveItems();
+        render();
+        document.querySelector("#status").textContent = "Lista limpa.";
+      });
+
+      document.querySelector("#share-button").addEventListener("click", async () => {
+        const text = [
+          "Lista do churrasco:",
+          ...items.map((item) => `${item.checked ? "✓" : "□"} ${item.name} - ${item.qty}`),
+        ].join("\n");
+
+        try {
+          if (navigator.share) {
+            await navigator.share({ title: "Lista do Churrasco", text, url: location.href });
+            document.querySelector("#status").textContent = "Lista compartilhada.";
+            return;
+          }
+
+          await navigator.clipboard.writeText(`${text}\n${location.href}`);
+          document.querySelector("#status").textContent = "Lista copiada.";
+        } catch {
+          document.querySelector("#status").textContent = "Não consegui compartilhar agora.";
+        }
+      });
+
+      render();
+    </script>
+  </body>
+</html>

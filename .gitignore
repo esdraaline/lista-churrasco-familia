@@ -40,3 +40,8 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# local deployment artifacts
+*.tar.gz
+mobile-test-screenshot.png
+github-pages-mobile*.png
