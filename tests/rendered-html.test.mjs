@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile, readdir } from "node:fs/promises";
+import { readFile, readdir, stat } from "node:fs/promises";
 import test from "node:test";
 
 async function render() {
@@ -33,9 +33,17 @@ test("server-renders the barbecue list page", async () => {
   assert.match(html, /Churrasco de domingo/);
   assert.match(html, /Adicionar produto/);
   assert.match(html, /Tomate/);
+  assert.match(html, /property="og:image"/);
+  assert.match(html, /content="https:\/\/lista-churrasco-familia\.esdraaline\.chatgpt\.site\/og\.png"/);
+  assert.match(html, /name="twitter:image"/);
   assert.doesNotMatch(html, /Tomate está na lista/i);
   assert.doesNotMatch(html, /novos produtos entram no campo/i);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
+});
+
+test("ships the WhatsApp preview image", async () => {
+  const image = await stat(new URL("../public/og.png", import.meta.url));
+  assert.ok(image.size > 100_000);
 });
 
 test("removes the temporary starter preview from the product source", async () => {
