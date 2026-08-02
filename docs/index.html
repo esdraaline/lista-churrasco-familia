@@ -304,7 +304,7 @@
 
       .tabs-card {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.96fr) minmax(0, 0.86fr);
         gap: 8px;
         margin-top: 14px;
         padding: 10px;
@@ -315,7 +315,7 @@
         min-height: 58px;
         border: 1px solid transparent;
         border-radius: 16px;
-        padding: 8px 6px;
+        padding: 8px 5px;
         color: var(--muted);
         background: rgba(15, 12, 11, 0.36);
         cursor: pointer;
@@ -341,10 +341,10 @@
       .tab-label {
         margin-top: 5px;
         overflow: hidden;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 900;
         text-overflow: ellipsis;
-        text-transform: uppercase;
+        text-transform: none;
         white-space: nowrap;
       }
 
