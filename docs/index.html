@@ -981,11 +981,20 @@
         postponed: false,
       }));
 
+      let idSequence = 0;
       let items = restoreItems();
       let bill = restoreBill();
       let eventTitle = restoreEventTitle();
       let activeTab = localStorage.getItem(tabStorageKey) || "ativas";
       if (!tabLabels[activeTab]) activeTab = "ativas";
+
+      function createUniqueId(prefix) {
+        idSequence += 1;
+        if (window.crypto?.randomUUID) {
+          return `${prefix}-${window.crypto.randomUUID()}`;
+        }
+        return `${prefix}-${Date.now().toString(36)}-${idSequence.toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+      }
 
       function restoreEventTitle() {
         return localStorage.getItem(eventStorageKey) || "";
@@ -1036,6 +1045,21 @@
         localStorage.setItem(storageKey, JSON.stringify(items));
       }
 
+      function normalizeParticipants(participants) {
+        const seenIds = new Set();
+        return participants.map((participant) => {
+          const currentId = typeof participant.id === "string" ? participant.id : "";
+          const id = currentId && !seenIds.has(currentId) ? currentId : createUniqueId("payer");
+          seenIds.add(id);
+          return {
+            ...participant,
+            id,
+            name: participant.name || "",
+            paid: participant.paid || "",
+          };
+        });
+      }
+
       function restoreBill() {
         const saved = localStorage.getItem(billStorageKey);
         if (!saved) {
@@ -1051,13 +1075,17 @@
 
         try {
           const parsed = JSON.parse(saved);
+          const participants = normalizeParticipants(Array.isArray(parsed.participants) ? parsed.participants : []);
+          const mainPayerId = participants.some((participant) => participant.id === parsed.mainPayerId)
+            ? parsed.mainPayerId
+            : "";
           return {
             total: parsed.total || "",
             splitCount: parsed.splitCount || "",
             newName: "",
             newPaid: "",
-            mainPayerId: parsed.mainPayerId || "",
-            participants: Array.isArray(parsed.participants) ? parsed.participants : [],
+            mainPayerId,
+            participants,
           };
         } catch {
           localStorage.removeItem(billStorageKey);
@@ -1332,7 +1360,7 @@
           const name = bill.newName.trim();
           if (!name) return;
           const newPayer = {
-            id: `payer-${Date.now()}`,
+            id: createUniqueId("payer"),
             name,
             paid: bill.newPaid.trim(),
           };
@@ -1593,7 +1621,7 @@
         if (!name) return;
 
         items.push({
-          id: `extra-${Date.now()}`,
+          id: createUniqueId("extra"),
           name,
           qty: qtyInput.value.trim() || "a combinar",
           icon: "🛒",

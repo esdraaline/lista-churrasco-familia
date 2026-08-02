@@ -61,6 +61,8 @@ test("GitHub Pages build contains grocery status tabs", async () => {
   assert.match(html, /postponeItem/);
   assert.match(html, /unpostponeItem/);
   assert.match(html, /calculateBill/);
+  assert.match(html, /createUniqueId/);
+  assert.match(html, /normalizeParticipants/);
   assert.match(html, /Quem pagou tudo\?/);
   assert.match(html, /Escolha o pagante/);
   assert.match(html, /Colocar total nesse pagante/);
@@ -71,6 +73,7 @@ test("GitHub Pages build contains grocery status tabs", async () => {
   assert.doesNotMatch(html, /payer-josemar|payer-valdemir|payer-alifer/);
   assert.doesNotMatch(html, /Josemar|Valdemir|Alifer/);
   assert.doesNotMatch(html, /Churrasco de domingo/);
+  assert.doesNotMatch(html, /payer-\$\{Date\.now\(\)\}|extra-\$\{Date\.now\(\)\}/);
   assert.doesNotMatch(html, /splitCount:\s*"3"/);
   assert.doesNotMatch(html, /Rotina|Agenda/);
 });
