@@ -47,6 +47,17 @@ test("ships the WhatsApp preview image", async () => {
   assert.ok(image.size < 250_000);
 });
 
+test("GitHub Pages build contains grocery status tabs", async () => {
+  const html = await readFile(new URL("../docs/index.html", import.meta.url), "utf8");
+  assert.match(html, /Minhas compras/);
+  assert.match(html, /Concluídas/);
+  assert.match(html, /Adiadas/);
+  assert.match(html, /postponeItem/);
+  assert.match(html, /unpostponeItem/);
+  assert.match(html, /Desmarcar concluídos/);
+  assert.doesNotMatch(html, /Rotina|Agenda/);
+});
+
 test("removes the temporary starter preview from the product source", async () => {
   const [page, layout, packageJson, appEntries] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
