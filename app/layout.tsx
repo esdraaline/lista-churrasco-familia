@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { DM_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 
-const siteUrl = "https://lista-churrasco-familia.esdraaline.chatgpt.site";
+const siteUrl = "https://esdraaline.github.io/lista-churrasco-familia";
+const previewImage = `${siteUrl}/preview-whatsapp.jpg`;
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -28,10 +29,11 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: `${siteUrl}/og.png`,
-        width: 1402,
-        height: 1122,
+        url: previewImage,
+        width: 1200,
+        height: 630,
         alt: "Familia em churrasco no quintal",
+        type: "image/jpeg",
       },
     ],
   },
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Lista do Churrasco",
     description: "Checklist mobile premium para organizar o churrasco da familia.",
-    images: [`${siteUrl}/og.png`],
+    images: [previewImage],
   },
   icons: {
     icon: "/favicon.svg",
