@@ -3,7 +3,7 @@
 import type { CSSProperties, FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
 
-type CategoryId = "carnes" | "bebidas" | "salada" | "sobremesa" | "extras";
+type CategoryId = "cafe" | "extras";
 
 type Item = {
   id: string;
@@ -18,29 +18,11 @@ const categories: Record<
   CategoryId,
   { title: string; subtitle: string; icon: string; accent: string }
 > = {
-  carnes: {
-    title: "Carnes & Fogo",
-    subtitle: "o principal da brasa",
-    icon: "🥩",
+  cafe: {
+    title: "Café da tarde",
+    subtitle: "ingredientes para comprar agora",
+    icon: "☕",
     accent: "#ff6a22",
-  },
-  bebidas: {
-    title: "Bebidas & Tempero",
-    subtitle: "gelado, cítrico e certeiro",
-    icon: "🍹",
-    accent: "#9bd85f",
-  },
-  salada: {
-    title: "Salada",
-    subtitle: "alface e tomate já garantidos",
-    icon: "🥗",
-    accent: "#55b978",
-  },
-  sobremesa: {
-    title: "Sobremesa",
-    subtitle: "mousse de maracujá com chocolate",
-    icon: "🍮",
-    accent: "#f4bd37",
   },
   extras: {
     title: "Itens adicionados",
@@ -52,121 +34,50 @@ const categories: Record<
 
 const baseItems: Item[] = [
   {
-    id: "contra-file",
-    name: "Contra-filé",
-    qty: "1,5 kg",
-    icon: "🍖",
-    category: "carnes",
+    id: "farinha-trigo",
+    name: "Farinha de trigo",
+    qty: "1 un.",
+    icon: "🌾",
+    category: "cafe",
     checked: false,
   },
   {
-    id: "cupim",
-    name: "Cupim",
-    qty: "1,5 kg",
-    icon: "🍖",
-    category: "carnes",
-    checked: false,
-  },
-  {
-    id: "linguica",
-    name: "Linguiça Perdigão",
-    qty: "1 kg",
-    icon: "🌭",
-    category: "carnes",
-    checked: false,
-  },
-  {
-    id: "carvao",
-    name: "Carvão",
-    qty: "4 kg",
-    icon: "⚫",
-    category: "carnes",
-    checked: false,
-  },
-  {
-    id: "limao",
-    name: "Limão",
-    qty: "8 un.",
-    icon: "🍋",
-    category: "bebidas",
-    checked: false,
-  },
-  {
-    id: "coca-zero",
-    name: "Coca-Cola Zero",
-    qty: "2 L",
-    icon: "🥤",
-    category: "bebidas",
-    checked: false,
-  },
-  {
-    id: "h2oh",
-    name: "H2OH",
-    qty: "2 L",
-    icon: "💧",
-    category: "bebidas",
-    checked: false,
-  },
-  {
-    id: "guarana",
-    name: "Guaraná",
-    qty: "2 L",
-    icon: "🥤",
-    category: "bebidas",
-    checked: false,
-  },
-  {
-    id: "alface",
-    name: "Alface",
-    qty: "2 pés",
-    icon: "🥬",
-    category: "salada",
-    checked: false,
-  },
-  {
-    id: "tomate",
-    name: "Tomate",
-    qty: "5 un.",
-    icon: "🍅",
-    category: "salada",
-    checked: false,
-  },
-  {
-    id: "maracuja",
-    name: "Maracujá",
-    qty: "4 un.",
-    icon: "💛",
-    category: "sobremesa",
-    checked: false,
-  },
-  {
-    id: "leite-condensado",
-    name: "Leite condensado",
-    qty: "2 latas",
+    id: "leite",
+    name: "Leite",
+    qty: "1 un.",
     icon: "🥛",
-    category: "sobremesa",
+    category: "cafe",
     checked: false,
   },
   {
-    id: "creme-leite",
-    name: "Creme de leite",
-    qty: "2 latas",
-    icon: "🍶",
-    category: "sobremesa",
+    id: "fermento",
+    name: "Fermento",
+    qty: "1 un.",
+    icon: "🧁",
+    category: "cafe",
     checked: false,
   },
   {
-    id: "chocolate-amargo",
-    name: "Chocolate amargo",
-    qty: "200 g",
-    icon: "🍫",
-    category: "sobremesa",
+    id: "coco-ralado",
+    name: "Coco ralado",
+    qty: "1 pacote",
+    icon: "🥥",
+    category: "cafe",
+    checked: false,
+  },
+  {
+    id: "manteiga-sem-sal",
+    name: "Manteiga sem sal",
+    qty: "1 pote pequeno",
+    icon: "🧈",
+    category: "cafe",
     checked: false,
   },
 ];
 
-const storageKey = "lista-churrasco-premium-v2";
-const eventStorageKey = "rachides-event-title-v1";
+const storageKey = "lista-churrasco-premium-v3-cafe";
+const eventStorageKey = "rachides-event-title-v2";
+const defaultEventTitle = "Café da tarde";
 let idSequence = 0;
 
 function createUniqueId(prefix: string) {
@@ -200,7 +111,7 @@ export default function Home() {
   useEffect(() => {
     const saved = window.localStorage.getItem(storageKey);
     const savedEventTitle = window.localStorage.getItem(eventStorageKey);
-    if (savedEventTitle) setEventTitle(savedEventTitle);
+    setEventTitle(savedEventTitle || defaultEventTitle);
     if (!saved) return;
 
     try {
@@ -271,7 +182,7 @@ export default function Home() {
   }
 
   async function shareList() {
-    const shareTitle = eventTitle.trim() || "Rachides entre amigos";
+    const shareTitle = eventTitle.trim() || defaultEventTitle || "Rachides entre amigos";
     const text = [
       shareTitle,
       "Lista de compras:",
@@ -372,7 +283,7 @@ export default function Home() {
       </form>
 
       {(
-        ["carnes", "bebidas", "salada", "sobremesa", "extras"] as CategoryId[]
+        ["cafe", "extras"] as CategoryId[]
       ).map((categoryId) => {
         const categoryItems = items.filter((item) => item.category === categoryId);
         if (categoryItems.length === 0) return null;
