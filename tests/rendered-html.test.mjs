@@ -31,9 +31,14 @@ test("server-renders the barbecue list page", async () => {
   const html = await response.text();
   assert.match(html, /<title>Rachides entre amigos<\/title>/i);
   assert.match(html, /Rachides entre amigos/);
+  assert.match(html, /Café da tarde/);
   assert.match(html, /Nome do evento/);
   assert.match(html, /Adicionar produto/);
-  assert.match(html, /Tomate/);
+  assert.match(html, /Farinha de trigo/);
+  assert.match(html, /Leite/);
+  assert.match(html, /Fermento/);
+  assert.match(html, /Coco ralado/);
+  assert.match(html, /Manteiga sem sal/);
   assert.match(html, /property="og:image"/);
   assert.match(html, /content="https:\/\/esdraaline\.github\.io\/lista-churrasco-familia\/preview-whatsapp\.jpg"/);
   assert.match(html, /name="twitter:image"/);
@@ -52,8 +57,15 @@ test("ships the WhatsApp preview image", async () => {
 test("GitHub Pages build contains grocery status tabs", async () => {
   const html = await readFile(new URL("../docs/index.html", import.meta.url), "utf8");
   assert.match(html, /Rachides entre amigos/);
+  assert.match(html, /Café da tarde/);
   assert.match(html, /Nome do evento/);
-  assert.match(html, /rachides-event-title-v1/);
+  assert.match(html, /rachides-event-title-v2/);
+  assert.match(html, /lista-churrasco-github-pages-v3-cafe/);
+  assert.match(html, /Farinha de trigo/);
+  assert.match(html, /Leite/);
+  assert.match(html, /Fermento/);
+  assert.match(html, /Coco ralado/);
+  assert.match(html, /Manteiga sem sal/);
   assert.match(html, /Minhas compras/);
   assert.match(html, /Concluídas/);
   assert.match(html, /Adiadas/);
@@ -73,6 +85,7 @@ test("GitHub Pages build contains grocery status tabs", async () => {
   assert.doesNotMatch(html, /payer-josemar|payer-valdemir|payer-alifer/);
   assert.doesNotMatch(html, /Josemar|Valdemir|Alifer/);
   assert.doesNotMatch(html, /Churrasco de domingo/);
+  assert.doesNotMatch(html, /Contra-filé|Cupim|Tomate|Carvão|Guaraná/);
   assert.doesNotMatch(html, /payer-\$\{Date\.now\(\)\}|extra-\$\{Date\.now\(\)\}/);
   assert.doesNotMatch(html, /splitCount:\s*"3"/);
   assert.doesNotMatch(html, /Rotina|Agenda/);
@@ -87,7 +100,8 @@ test("removes the temporary starter preview from the product source", async () =
   ]);
 
   assert.match(page, /baseItems/);
-  assert.match(page, /id: "tomate"/);
+  assert.match(page, /id: "farinha-trigo"/);
+  assert.match(page, /Manteiga sem sal/);
   assert.match(page, /function addItem/);
   assert.doesNotMatch(page, /detergente/i);
   assert.doesNotMatch(layout, /Starter Project|codex-preview|_sites-preview/);

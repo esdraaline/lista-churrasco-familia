@@ -851,9 +851,9 @@
           </div>
         </form>
         <div class="hero__stats" aria-label="Resumo da lista">
-          <div><strong id="total-count">14</strong><span>itens</span></div>
+          <div><strong id="total-count">5</strong><span>itens</span></div>
           <div><strong id="checked-count">0</strong><span>comprados</span></div>
-          <div><strong id="missing-count">14</strong><span>faltando</span></div>
+          <div><strong id="missing-count">5</strong><span>faltando</span></div>
         </div>
       </section>
 
@@ -878,7 +878,7 @@
         <button class="tab-btn" type="button" role="tab" aria-selected="true" data-tab="ativas">
           <span class="tab-emoji" aria-hidden="true">🛒</span>
           <span class="tab-label">Minhas compras</span>
-          <span class="tab-badge" id="badge-ativas">14</span>
+          <span class="tab-badge" id="badge-ativas">5</span>
         </button>
         <button class="tab-btn" type="button" role="tab" aria-selected="false" data-tab="concluidas">
           <span class="tab-emoji" aria-hidden="true">✅</span>
@@ -911,11 +911,12 @@
     </main>
 
     <script>
-      const storageKey = "lista-churrasco-github-pages-v2";
+      const storageKey = "lista-churrasco-github-pages-v3-cafe";
       const legacyStorageKey = "lista-churrasco-github-pages-v1";
-      const tabStorageKey = "lista-churrasco-active-tab-v1";
+      const tabStorageKey = "lista-churrasco-active-tab-v2";
       const billStorageKey = "lista-churrasco-bill-v1";
-      const eventStorageKey = "rachides-event-title-v1";
+      const eventStorageKey = "rachides-event-title-v2";
+      const defaultEventTitle = "Café da tarde";
       const tabLabels = {
         ativas: "Minhas compras",
         concluidas: "Compras concluídas",
@@ -924,29 +925,11 @@
       };
 
       const categories = {
-        carnes: {
-          title: "Carnes & Fogo",
-          subtitle: "o principal da brasa",
-          icon: "🥩",
+        cafe: {
+          title: "Café da tarde",
+          subtitle: "ingredientes para comprar agora",
+          icon: "☕",
           accent: "#ff6a22",
-        },
-        bebidas: {
-          title: "Bebidas & Tempero",
-          subtitle: "gelado, cítrico e certeiro",
-          icon: "🍹",
-          accent: "#9bd85f",
-        },
-        salada: {
-          title: "Salada",
-          subtitle: "alface e tomate já garantidos",
-          icon: "🥗",
-          accent: "#55b978",
-        },
-        sobremesa: {
-          title: "Sobremesa",
-          subtitle: "mousse de maracujá com chocolate",
-          icon: "🍮",
-          accent: "#f4bd37",
         },
         extras: {
           title: "Itens adicionados",
@@ -957,20 +940,11 @@
       };
 
       const baseItems = [
-        ["contra-file", "Contra-filé", "1,5 kg", "🍖", "carnes"],
-        ["cupim", "Cupim", "1,5 kg", "🍖", "carnes"],
-        ["linguica", "Linguiça Perdigão", "1 kg", "🌭", "carnes"],
-        ["carvao", "Carvão", "4 kg", "⚫", "carnes"],
-        ["limao", "Limão", "8 un.", "🍋", "bebidas"],
-        ["coca-zero", "Coca-Cola Zero", "2 L", "🥤", "bebidas"],
-        ["h2oh", "H2OH", "2 L", "💧", "bebidas"],
-        ["guarana", "Guaraná", "2 L", "🥤", "bebidas"],
-        ["alface", "Alface", "2 pés", "🥬", "salada"],
-        ["tomate", "Tomate", "5 un.", "🍅", "salada"],
-        ["maracuja", "Maracujá", "4 un.", "💛", "sobremesa"],
-        ["leite-condensado", "Leite condensado", "2 latas", "🥛", "sobremesa"],
-        ["creme-leite", "Creme de leite", "2 latas", "🍶", "sobremesa"],
-        ["chocolate-amargo", "Chocolate amargo", "200 g", "🍫", "sobremesa"],
+        ["farinha-trigo", "Farinha de trigo", "1 un.", "🌾", "cafe"],
+        ["leite", "Leite", "1 un.", "🥛", "cafe"],
+        ["fermento", "Fermento", "1 un.", "🧁", "cafe"],
+        ["coco-ralado", "Coco ralado", "1 pacote", "🥥", "cafe"],
+        ["manteiga-sem-sal", "Manteiga sem sal", "1 pote pequeno", "🧈", "cafe"],
       ].map(([id, name, qty, icon, category]) => ({
         id,
         name,
@@ -997,7 +971,7 @@
       }
 
       function restoreEventTitle() {
-        return localStorage.getItem(eventStorageKey) || "";
+        return localStorage.getItem(eventStorageKey) || defaultEventTitle;
       }
 
       function saveEventTitle() {
@@ -1011,11 +985,11 @@
       }
 
       function getDisplayTitle() {
-        return eventTitle || "Rachides entre amigos";
+        return eventTitle || defaultEventTitle || "Rachides entre amigos";
       }
 
       function restoreItems() {
-        const saved = localStorage.getItem(storageKey) || localStorage.getItem(legacyStorageKey);
+        const saved = localStorage.getItem(storageKey);
         if (!saved) return [...baseItems];
 
         try {
