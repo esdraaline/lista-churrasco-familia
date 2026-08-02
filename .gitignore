@@ -45,3 +45,6 @@ next-env.d.ts
 *.tar.gz
 mobile-test-screenshot.png
 github-pages-mobile*.png
+mobile-live*.png
+mobile-fresh*.png
+.playwright-mcp/

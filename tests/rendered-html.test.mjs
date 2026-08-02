@@ -34,7 +34,7 @@ test("server-renders the barbecue list page", async () => {
   assert.match(html, /Adicionar produto/);
   assert.match(html, /Tomate/);
   assert.match(html, /property="og:image"/);
-  assert.match(html, /content="https:\/\/lista-churrasco-familia\.esdraaline\.chatgpt\.site\/og\.png"/);
+  assert.match(html, /content="https:\/\/esdraaline\.github\.io\/lista-churrasco-familia\/preview-whatsapp\.jpg"/);
   assert.match(html, /name="twitter:image"/);
   assert.doesNotMatch(html, /Tomate está na lista/i);
   assert.doesNotMatch(html, /novos produtos entram no campo/i);
@@ -42,8 +42,9 @@ test("server-renders the barbecue list page", async () => {
 });
 
 test("ships the WhatsApp preview image", async () => {
-  const image = await stat(new URL("../public/og.png", import.meta.url));
+  const image = await stat(new URL("../public/preview-whatsapp.jpg", import.meta.url));
   assert.ok(image.size > 100_000);
+  assert.ok(image.size < 250_000);
 });
 
 test("removes the temporary starter preview from the product source", async () => {
