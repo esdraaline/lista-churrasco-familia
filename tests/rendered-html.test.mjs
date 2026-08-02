@@ -33,7 +33,8 @@ test("server-renders the barbecue list page", async () => {
   assert.match(html, /Churrasco de domingo/);
   assert.match(html, /Adicionar produto/);
   assert.match(html, /Tomate/);
-  assert.match(html, /novos produtos entram no campo/i);
+  assert.doesNotMatch(html, /Tomate está na lista/i);
+  assert.doesNotMatch(html, /novos produtos entram no campo/i);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
 });
 

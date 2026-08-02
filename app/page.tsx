@@ -368,14 +368,6 @@ export default function Home() {
         );
       })}
 
-      <section className="note">
-        <strong>Tomate está na lista.</strong>
-        <span>
-          Fica em Salada junto com o alface. Os novos produtos entram no campo
-          acima e ficam salvos neste aparelho.
-        </span>
-      </section>
-
       <div className="actions" aria-label="Ações da lista">
         <button type="button" onClick={shareList}>
           Compartilhar
