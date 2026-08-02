@@ -1,6 +1,6 @@
-# Lista do Churrasco
+# Rachides entre amigos
 
-Checklist mobile para organizar o churrasco da familia.
+Lista mobile para organizar compras, eventos e divisão de conta entre família e amigos.
 
 Site publicado no GitHub Pages:
 
