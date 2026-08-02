@@ -18,13 +18,13 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: "Lista do Churrasco",
-  description: "Checklist mobile premium para organizar o churrasco da familia.",
+  title: "Rachides entre amigos",
+  description: "Lista mobile para organizar compras e divisão de conta entre família e amigos.",
   openGraph: {
-    title: "Lista do Churrasco",
-    description: "Checklist mobile premium para organizar o churrasco da familia.",
+    title: "Rachides entre amigos",
+    description: "Lista mobile para organizar compras e divisão de conta entre família e amigos.",
     url: siteUrl,
-    siteName: "Lista do Churrasco",
+    siteName: "Rachides entre amigos",
     locale: "pt_BR",
     type: "website",
     images: [
@@ -32,15 +32,15 @@ export const metadata: Metadata = {
         url: previewImage,
         width: 1200,
         height: 630,
-        alt: "Familia em churrasco no quintal",
+        alt: "Família reunida em encontro no quintal",
         type: "image/jpeg",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Lista do Churrasco",
-    description: "Checklist mobile premium para organizar o churrasco da familia.",
+    title: "Rachides entre amigos",
+    description: "Lista mobile para organizar compras e divisão de conta entre família e amigos.",
     images: [previewImage],
   },
   icons: {

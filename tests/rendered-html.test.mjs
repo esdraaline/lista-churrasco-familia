@@ -29,13 +29,15 @@ test("server-renders the barbecue list page", async () => {
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Lista do Churrasco<\/title>/i);
-  assert.match(html, /Churrasco de domingo/);
+  assert.match(html, /<title>Rachides entre amigos<\/title>/i);
+  assert.match(html, /Rachides entre amigos/);
+  assert.match(html, /Nome do evento/);
   assert.match(html, /Adicionar produto/);
   assert.match(html, /Tomate/);
   assert.match(html, /property="og:image"/);
   assert.match(html, /content="https:\/\/esdraaline\.github\.io\/lista-churrasco-familia\/preview-whatsapp\.jpg"/);
   assert.match(html, /name="twitter:image"/);
+  assert.doesNotMatch(html, /Churrasco de domingo/);
   assert.doesNotMatch(html, /Tomate está na lista/i);
   assert.doesNotMatch(html, /novos produtos entram no campo/i);
   assert.doesNotMatch(html, /Your site is taking shape|codex-preview/i);
@@ -49,6 +51,9 @@ test("ships the WhatsApp preview image", async () => {
 
 test("GitHub Pages build contains grocery status tabs", async () => {
   const html = await readFile(new URL("../docs/index.html", import.meta.url), "utf8");
+  assert.match(html, /Rachides entre amigos/);
+  assert.match(html, /Nome do evento/);
+  assert.match(html, /rachides-event-title-v1/);
   assert.match(html, /Minhas compras/);
   assert.match(html, /Concluídas/);
   assert.match(html, /Adiadas/);
@@ -65,6 +70,7 @@ test("GitHub Pages build contains grocery status tabs", async () => {
   assert.match(html, /Desmarcar concluídos/);
   assert.doesNotMatch(html, /payer-josemar|payer-valdemir|payer-alifer/);
   assert.doesNotMatch(html, /Josemar|Valdemir|Alifer/);
+  assert.doesNotMatch(html, /Churrasco de domingo/);
   assert.doesNotMatch(html, /splitCount:\s*"3"/);
   assert.doesNotMatch(html, /Rotina|Agenda/);
 });

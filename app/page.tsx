@@ -166,6 +166,7 @@ const baseItems: Item[] = [
 ];
 
 const storageKey = "lista-churrasco-premium-v2";
+const eventStorageKey = "rachides-event-title-v1";
 
 function mergeStoredItems(storedItems: Item[]) {
   const storedById = new Map(storedItems.map((item) => [item.id, item]));
@@ -184,10 +185,13 @@ export default function Home() {
   const [items, setItems] = useState(baseItems);
   const [newName, setNewName] = useState("");
   const [newQty, setNewQty] = useState("");
+  const [eventTitle, setEventTitle] = useState("");
   const [shareStatus, setShareStatus] = useState("");
 
   useEffect(() => {
     const saved = window.localStorage.getItem(storageKey);
+    const savedEventTitle = window.localStorage.getItem(eventStorageKey);
+    if (savedEventTitle) setEventTitle(savedEventTitle);
     if (!saved) return;
 
     try {
@@ -200,6 +204,15 @@ export default function Home() {
   useEffect(() => {
     window.localStorage.setItem(storageKey, JSON.stringify(items));
   }, [items]);
+
+  useEffect(() => {
+    const normalizedTitle = eventTitle.trim();
+    if (normalizedTitle) {
+      window.localStorage.setItem(eventStorageKey, normalizedTitle);
+    } else {
+      window.localStorage.removeItem(eventStorageKey);
+    }
+  }, [eventTitle]);
 
   const checkedCount = items.filter((item) => item.checked).length;
   const progress = Math.round((checkedCount / items.length) * 100);
@@ -242,15 +255,23 @@ export default function Home() {
     setShareStatus("Lista limpa.");
   }
 
+  function saveEvent(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setEventTitle((current) => current.trim());
+    setShareStatus(eventTitle.trim() ? "Evento salvo." : "Nome do evento limpo.");
+  }
+
   async function shareList() {
+    const shareTitle = eventTitle.trim() || "Rachides entre amigos";
     const text = [
-      "Lista do churrasco:",
+      shareTitle,
+      "Lista de compras:",
       ...items.map((item) => `${item.checked ? "✓" : "□"} ${item.name} - ${item.qty}`),
     ].join("\n");
 
     try {
       if (navigator.share) {
-        await navigator.share({ title: "Lista do Churrasco", text });
+        await navigator.share({ title: shareTitle, text });
         setShareStatus("Lista compartilhada.");
         return;
       }
@@ -267,11 +288,29 @@ export default function Home() {
       <section className="hero" aria-labelledby="page-title">
         <div className="hero__glow" />
         <div className="eyebrow">
-          <span aria-hidden="true">🔥</span>
-          Churrasco de domingo
+          <span aria-hidden="true">💸</span>
+          Rachides entre amigos
         </div>
-        <h1 id="page-title">Lista do Churrasco</h1>
-        <p>9 pessoas · 07 adultos + 02 crianças · pronta para mostrar no celular.</p>
+        <h1 id="page-title">Rachides entre amigos</h1>
+        <p>
+          {eventTitle.trim()
+            ? `Evento: ${eventTitle.trim()}`
+            : "Compras e conta do encontro, tudo no celular."}
+        </p>
+
+        <form className="event-editor" onSubmit={saveEvent}>
+          <label htmlFor="event-title">Nome do evento</label>
+          <div className="event-editor__row">
+            <input
+              id="event-title"
+              value={eventTitle}
+              onChange={(event) => setEventTitle(event.target.value)}
+              placeholder="Ex.: janta na vovó Zé"
+              autoComplete="off"
+            />
+            <button type="submit">Salvar</button>
+          </div>
+        </form>
 
         <div className="hero__stats" aria-label="Resumo da lista">
           <div>

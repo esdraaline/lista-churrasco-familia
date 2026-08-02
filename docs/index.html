@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#150f0d" />
-    <title>Lista do Churrasco</title>
+    <title>Rachides entre amigos</title>
     <meta
       name="description"
-      content="Checklist mobile premium para organizar o churrasco da familia."
+      content="Lista mobile para organizar compras e divisão de conta entre família e amigos."
     />
-    <meta property="og:title" content="Lista do Churrasco" />
+    <meta property="og:title" content="Rachides entre amigos" />
     <meta
       property="og:description"
-      content="Checklist mobile premium para organizar o churrasco da familia."
+      content="Lista mobile para organizar compras e divisão de conta entre família e amigos."
     />
     <meta
       property="og:url"
@@ -31,12 +31,12 @@
     <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Familia em churrasco no quintal" />
+    <meta property="og:image:alt" content="Família reunida em encontro no quintal" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Lista do Churrasco" />
+    <meta name="twitter:title" content="Rachides entre amigos" />
     <meta
       name="twitter:description"
-      content="Checklist mobile premium para organizar o churrasco da familia."
+      content="Lista mobile para organizar compras e divisão de conta entre família e amigos."
     />
     <meta
       name="twitter:image"
@@ -131,6 +131,7 @@
       .eyebrow,
       .hero h1,
       .hero p,
+      .event-editor,
       .hero__stats {
         position: relative;
         z-index: 1;
@@ -164,6 +165,54 @@
         color: var(--muted);
         font-size: 15px;
         line-height: 1.45;
+      }
+
+      .event-editor {
+        width: 100%;
+        margin-top: 18px;
+      }
+
+      .event-editor label {
+        display: block;
+        margin-bottom: 8px;
+        color: #fff2dc;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .event-editor__row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+      }
+
+      .event-editor input {
+        width: 100%;
+        min-width: 0;
+        height: 46px;
+        border: 1px solid rgba(255, 246, 232, 0.14);
+        border-radius: 14px;
+        padding: 0 13px;
+        background: rgba(15, 12, 11, 0.5);
+        color: var(--foreground);
+        outline: none;
+      }
+
+      .event-editor input:focus {
+        border-color: rgba(255, 106, 34, 0.75);
+        box-shadow: 0 0 0 3px rgba(255, 106, 34, 0.18);
+      }
+
+      .event-editor button {
+        height: 46px;
+        border: 0;
+        border-radius: 14px;
+        padding: 0 16px;
+        background: linear-gradient(135deg, var(--fire), var(--gold));
+        color: #1b1009;
+        font-weight: 900;
       }
 
       .hero__stats {
@@ -791,9 +840,16 @@
   <body>
     <main class="shell">
       <section class="hero" aria-labelledby="page-title">
-        <div class="eyebrow"><span aria-hidden="true">🔥</span> Churrasco de domingo</div>
-        <h1 id="page-title">Lista do Churrasco</h1>
-        <p>9 pessoas · 07 adultos + 02 crianças · pronta para mostrar no celular.</p>
+        <div class="eyebrow"><span aria-hidden="true">💸</span> Rachides entre amigos</div>
+        <h1 id="page-title">Rachides entre amigos</h1>
+        <p id="event-title-display">Compras e conta do encontro, tudo no celular.</p>
+        <form class="event-editor" id="event-form">
+          <label for="event-title">Nome do evento</label>
+          <div class="event-editor__row">
+            <input id="event-title" placeholder="Ex.: janta na vovó Zé" autocomplete="off" />
+            <button type="submit">Salvar</button>
+          </div>
+        </form>
         <div class="hero__stats" aria-label="Resumo da lista">
           <div><strong id="total-count">14</strong><span>itens</span></div>
           <div><strong id="checked-count">0</strong><span>comprados</span></div>
@@ -859,6 +915,7 @@
       const legacyStorageKey = "lista-churrasco-github-pages-v1";
       const tabStorageKey = "lista-churrasco-active-tab-v1";
       const billStorageKey = "lista-churrasco-bill-v1";
+      const eventStorageKey = "rachides-event-title-v1";
       const tabLabels = {
         ativas: "Minhas compras",
         concluidas: "Compras concluídas",
@@ -926,8 +983,27 @@
 
       let items = restoreItems();
       let bill = restoreBill();
+      let eventTitle = restoreEventTitle();
       let activeTab = localStorage.getItem(tabStorageKey) || "ativas";
       if (!tabLabels[activeTab]) activeTab = "ativas";
+
+      function restoreEventTitle() {
+        return localStorage.getItem(eventStorageKey) || "";
+      }
+
+      function saveEventTitle() {
+        const normalizedTitle = eventTitle.trim();
+        eventTitle = normalizedTitle;
+        if (normalizedTitle) {
+          localStorage.setItem(eventStorageKey, normalizedTitle);
+        } else {
+          localStorage.removeItem(eventStorageKey);
+        }
+      }
+
+      function getDisplayTitle() {
+        return eventTitle || "Rachides entre amigos";
+      }
 
       function restoreItems() {
         const saved = localStorage.getItem(storageKey) || localStorage.getItem(legacyStorageKey);
@@ -1290,7 +1366,7 @@
         document.querySelector("#copy-settlement")?.addEventListener("click", async () => {
           const result = calculateBill();
           const lines = [
-            "Divisão do churrasco:",
+            `Divisão - ${getDisplayTitle()}:`,
             `Total: ${formatMoney(result.total)}`,
             `Dividindo por: ${result.splitCount}`,
             `Cada um: ${formatMoney(result.share)}`,
@@ -1322,7 +1398,20 @@
         });
       }
 
+      function renderEventTitle() {
+        const input = document.querySelector("#event-title");
+        const display = document.querySelector("#event-title-display");
+        if (input) input.value = eventTitle;
+        if (display) {
+          display.textContent = eventTitle
+            ? `Evento: ${eventTitle}`
+            : "Compras e conta do encontro, tudo no celular.";
+        }
+        document.title = eventTitle ? `${eventTitle} | Rachides entre amigos` : "Rachides entre amigos";
+      }
+
       function render() {
+        renderEventTitle();
         const categoryRoot = document.querySelector("#categories");
         const billPanel = document.querySelector("#bill-panel");
         categoryRoot.innerHTML = "";
@@ -1486,6 +1575,16 @@
         document.querySelector("#status").textContent = "Item voltou para Minhas compras.";
       }
 
+      document.querySelector("#event-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        eventTitle = document.querySelector("#event-title").value;
+        saveEventTitle();
+        renderEventTitle();
+        document.querySelector("#status").textContent = eventTitle
+          ? "Evento salvo."
+          : "Nome do evento limpo.";
+      });
+
       document.querySelector("#add-form").addEventListener("submit", (event) => {
         event.preventDefault();
         const nameInput = document.querySelector("#new-product");
@@ -1536,14 +1635,16 @@
       });
 
       document.querySelector("#share-button").addEventListener("click", async () => {
+        const shareTitle = getDisplayTitle();
         const text = [
-          "Lista do churrasco:",
+          shareTitle,
+          "Lista de compras:",
           ...items.map((item) => `${item.checked ? "✓" : "□"} ${item.name} - ${item.qty}`),
         ].join("\n");
 
         try {
           if (navigator.share) {
-            await navigator.share({ title: "Lista do Churrasco", text, url: location.href });
+            await navigator.share({ title: shareTitle, text, url: location.href });
             document.querySelector("#status").textContent = "Lista compartilhada.";
             return;
           }
