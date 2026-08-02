@@ -203,6 +203,7 @@
 
       .progress-card,
       .add-form,
+      .tabs-card,
       .category {
         border: 1px solid var(--line);
         border-radius: 22px;
@@ -301,6 +302,64 @@
         cursor: pointer;
       }
 
+      .tabs-card {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 14px;
+        padding: 10px;
+      }
+
+      .tab-btn {
+        min-width: 0;
+        min-height: 58px;
+        border: 1px solid transparent;
+        border-radius: 16px;
+        padding: 8px 6px;
+        color: var(--muted);
+        background: rgba(15, 12, 11, 0.36);
+        cursor: pointer;
+      }
+
+      .tab-btn[aria-selected="true"] {
+        border-color: rgba(255, 106, 34, 0.52);
+        color: #fff7ea;
+        background: linear-gradient(135deg, rgba(255, 106, 34, 0.22), rgba(244, 189, 55, 0.12));
+      }
+
+      .tab-emoji,
+      .tab-label,
+      .tab-badge {
+        display: block;
+      }
+
+      .tab-emoji {
+        font-size: 19px;
+        line-height: 1;
+      }
+
+      .tab-label {
+        margin-top: 5px;
+        overflow: hidden;
+        font-size: 11px;
+        font-weight: 900;
+        text-overflow: ellipsis;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+
+      .tab-badge {
+        width: fit-content;
+        min-width: 22px;
+        margin: 6px auto 0;
+        border-radius: 999px;
+        padding: 2px 7px;
+        color: #1b110c;
+        background: #fff2dc;
+        font-size: 11px;
+        font-weight: 900;
+      }
+
       .category {
         margin-top: 14px;
         overflow: hidden;
@@ -348,7 +407,7 @@
 
       .item {
         display: grid;
-        grid-template-columns: 28px 30px minmax(0, 1fr) auto;
+        grid-template-columns: 28px 30px minmax(0, 1fr) auto auto;
         align-items: center;
         gap: 10px;
         width: 100%;
@@ -418,6 +477,45 @@
       .item--checked .item__qty,
       .item--checked .item__icon {
         opacity: 0.58;
+      }
+
+      .item--postponed {
+        background: rgba(111, 183, 255, 0.1);
+      }
+
+      .item__action {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border: 1px solid rgba(255, 246, 232, 0.14);
+        border-radius: 999px;
+        color: #fff7ea;
+        background: rgba(255, 246, 232, 0.08);
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .item__action--return {
+        color: #101722;
+        background: #8fc8ff;
+      }
+
+      .empty-state {
+        margin-top: 14px;
+        border: 1px dashed var(--line);
+        border-radius: 22px;
+        padding: 28px 18px;
+        color: var(--muted);
+        background: rgba(255, 246, 232, 0.05);
+        text-align: center;
+      }
+
+      .empty-state strong {
+        display: block;
+        margin-bottom: 6px;
+        color: #ffffff;
+        font-size: 18px;
       }
 
       .actions {
@@ -506,11 +604,29 @@
         </div>
       </form>
 
-      <div id="categories"></div>
+      <nav class="tabs-card" role="tablist" aria-label="Seções de compras">
+        <button class="tab-btn" type="button" role="tab" aria-selected="true" data-tab="ativas">
+          <span class="tab-emoji" aria-hidden="true">🛒</span>
+          <span class="tab-label">Minhas compras</span>
+          <span class="tab-badge" id="badge-ativas">14</span>
+        </button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="false" data-tab="concluidas">
+          <span class="tab-emoji" aria-hidden="true">✅</span>
+          <span class="tab-label">Concluídas</span>
+          <span class="tab-badge" id="badge-concluidas">0</span>
+        </button>
+        <button class="tab-btn" type="button" role="tab" aria-selected="false" data-tab="adiadas">
+          <span class="tab-emoji" aria-hidden="true">🕒</span>
+          <span class="tab-label">Adiadas</span>
+          <span class="tab-badge" id="badge-adiadas">0</span>
+        </button>
+      </nav>
+
+      <div id="categories" role="tabpanel" aria-live="polite"></div>
 
       <div class="actions" aria-label="Ações da lista">
         <button type="button" id="share-button">Compartilhar</button>
-        <button type="button" class="secondary" id="reset-button">Limpar marcações</button>
+        <button type="button" class="secondary" id="reset-button">Desmarcar concluídos</button>
       </div>
 
       <p class="status" id="status" role="status">
@@ -519,7 +635,14 @@
     </main>
 
     <script>
-      const storageKey = "lista-churrasco-github-pages-v1";
+      const storageKey = "lista-churrasco-github-pages-v2";
+      const legacyStorageKey = "lista-churrasco-github-pages-v1";
+      const tabStorageKey = "lista-churrasco-active-tab-v1";
+      const tabLabels = {
+        ativas: "Minhas compras",
+        concluidas: "Compras concluídas",
+        adiadas: "Compras adiadas",
+      };
 
       const categories = {
         carnes: {
@@ -576,12 +699,15 @@
         icon,
         category,
         checked: false,
+        postponed: false,
       }));
 
       let items = restoreItems();
+      let activeTab = localStorage.getItem(tabStorageKey) || "ativas";
+      if (!tabLabels[activeTab]) activeTab = "ativas";
 
       function restoreItems() {
-        const saved = localStorage.getItem(storageKey);
+        const saved = localStorage.getItem(storageKey) || localStorage.getItem(legacyStorageKey);
         if (!saved) return [...baseItems];
 
         try {
@@ -590,11 +716,19 @@
           const restoredBase = baseItems.map((item) => ({
             ...item,
             checked: savedById.get(item.id)?.checked || false,
+            postponed: savedById.get(item.id)?.postponed || false,
           }));
-          const extras = parsed.filter((item) => !baseItems.some((baseItem) => baseItem.id === item.id));
+          const extras = parsed
+            .filter((item) => !baseItems.some((baseItem) => baseItem.id === item.id))
+            .map((item) => ({
+              ...item,
+              checked: !!item.checked,
+              postponed: !!item.postponed,
+            }));
           return [...restoredBase, ...extras];
         } catch {
           localStorage.removeItem(storageKey);
+          localStorage.removeItem(legacyStorageKey);
           return [...baseItems];
         }
       }
@@ -616,9 +750,35 @@
       function render() {
         const categoryRoot = document.querySelector("#categories");
         categoryRoot.innerHTML = "";
+        document.querySelectorAll(".tab-btn").forEach((button) => {
+          button.setAttribute("aria-selected", String(button.dataset.tab === activeTab));
+        });
+
+        const visibleItems = items.filter((item) => {
+          if (activeTab === "concluidas") return item.checked;
+          if (activeTab === "adiadas") return item.postponed;
+          return !item.checked && !item.postponed;
+        });
+
+        if (visibleItems.length === 0) {
+          const emptyMessages = {
+            ativas: ["Tudo resolvido!", "Não há compras ativas agora."],
+            concluidas: ["Nenhuma compra concluída", "Marque itens em Minhas compras para eles aparecerem aqui."],
+            adiadas: ["Nenhuma compra adiada", "Use o botão 🕒 para mandar um item para adiadas."],
+          };
+          const [title, text] = emptyMessages[activeTab];
+          categoryRoot.innerHTML = `
+            <div class="empty-state">
+              <strong>${title}</strong>
+              <span>${text}</span>
+            </div>
+          `;
+          updateProgress();
+          return;
+        }
 
         Object.entries(categories).forEach(([categoryId, category]) => {
-          const categoryItems = items.filter((item) => item.category === categoryId);
+          const categoryItems = visibleItems.filter((item) => item.category === categoryId);
           if (categoryItems.length === 0) return;
 
           const section = document.createElement("section");
@@ -635,15 +795,23 @@
             <div class="items">
               ${categoryItems.map((item) => `
                 <button
-                  class="item ${item.checked ? "item--checked" : ""}"
+                  class="item ${item.checked ? "item--checked" : ""} ${item.postponed ? "item--postponed" : ""}"
                   type="button"
                   aria-pressed="${item.checked}"
                   data-id="${escapeHtml(item.id)}"
+                  data-item-action="${activeTab === "adiadas" ? "unpostpone" : "toggle"}"
                 >
                   <span class="check" aria-hidden="true">${item.checked ? "✓" : ""}</span>
                   <span class="item__icon" aria-hidden="true">${item.icon}</span>
                   <span class="item__name">${escapeHtml(item.name)}</span>
                   <span class="item__qty">${escapeHtml(item.qty)}</span>
+                  ${
+                    activeTab === "ativas"
+                      ? `<span class="item__action postpone-control" data-id="${escapeHtml(item.id)}" role="button" aria-label="Adiar ${escapeHtml(item.name)}">🕒</span>`
+                      : activeTab === "adiadas"
+                      ? `<span class="item__action item__action--return return-control" data-id="${escapeHtml(item.id)}" role="button" aria-label="Trazer ${escapeHtml(item.name)} de volta">↩</span>`
+                      : `<span aria-hidden="true"></span>`
+                  }
                 </button>
               `).join("")}
             </div>
@@ -653,7 +821,27 @@
         });
 
         document.querySelectorAll(".item").forEach((button) => {
-          button.addEventListener("click", () => toggleItem(button.dataset.id));
+          button.addEventListener("click", () => {
+            if (button.dataset.itemAction === "unpostpone") {
+              unpostponeItem(button.dataset.id);
+              return;
+            }
+            toggleItem(button.dataset.id);
+          });
+        });
+
+        document.querySelectorAll(".postpone-control").forEach((control) => {
+          control.addEventListener("click", (event) => {
+            event.stopPropagation();
+            postponeItem(control.dataset.id);
+          });
+        });
+
+        document.querySelectorAll(".return-control").forEach((control) => {
+          control.addEventListener("click", (event) => {
+            event.stopPropagation();
+            unpostponeItem(control.dataset.id);
+          });
         });
 
         updateProgress();
@@ -661,21 +849,53 @@
 
       function updateProgress() {
         const checked = items.filter((item) => item.checked).length;
+        const postponed = items.filter((item) => item.postponed).length;
+        const active = items.filter((item) => !item.checked && !item.postponed).length;
         const total = items.length;
-        const missing = total - checked;
+        const missing = active + postponed;
         const progress = total ? Math.round((checked / total) * 100) : 0;
 
         document.querySelector("#total-count").textContent = total;
         document.querySelector("#checked-count").textContent = checked;
         document.querySelector("#missing-count").textContent = missing;
+        document.querySelector("#badge-ativas").textContent = active;
+        document.querySelector("#badge-concluidas").textContent = checked;
+        document.querySelector("#badge-adiadas").textContent = postponed;
         document.querySelector("#progress-label").textContent = `${checked} de ${total}`;
         document.querySelector("#progress-fill").style.width = `${progress}%`;
       }
 
       function toggleItem(id) {
-        items = items.map((item) => item.id === id ? { ...item, checked: !item.checked } : item);
+        items = items.map((item) => {
+          if (item.id !== id) return item;
+          const checked = !item.checked;
+          return { ...item, checked, postponed: checked ? false : item.postponed };
+        });
         saveItems();
         render();
+        document.querySelector("#status").textContent = activeTab === "concluidas"
+          ? "Item voltou para Minhas compras."
+          : "Item movido para Compras concluídas.";
+      }
+
+      function postponeItem(id) {
+        items = items.map((item) =>
+          item.id === id ? { ...item, checked: false, postponed: true } : item
+        );
+        saveItems();
+        render();
+        document.querySelector("#status").textContent = "Item adiado.";
+      }
+
+      function unpostponeItem(id) {
+        items = items.map((item) =>
+          item.id === id ? { ...item, checked: false, postponed: false } : item
+        );
+        saveItems();
+        activeTab = "ativas";
+        localStorage.setItem(tabStorageKey, activeTab);
+        render();
+        document.querySelector("#status").textContent = "Item voltou para Minhas compras.";
       }
 
       document.querySelector("#add-form").addEventListener("submit", (event) => {
@@ -692,20 +912,39 @@
           icon: "🛒",
           category: "extras",
           checked: false,
+          postponed: false,
         });
 
         nameInput.value = "";
         qtyInput.value = "";
         saveItems();
+        activeTab = "ativas";
+        localStorage.setItem(tabStorageKey, activeTab);
         render();
         document.querySelector("#status").textContent = "Item adicionado.";
       });
 
       document.querySelector("#reset-button").addEventListener("click", () => {
-        items = [...baseItems];
+        const hasChecked = items.some((item) => item.checked);
+        if (!hasChecked) {
+          document.querySelector("#status").textContent = "Não há compras concluídas para desmarcar.";
+          return;
+        }
+        items = items.map((item) => ({ ...item, checked: false }));
         saveItems();
+        activeTab = "ativas";
+        localStorage.setItem(tabStorageKey, activeTab);
         render();
-        document.querySelector("#status").textContent = "Lista limpa.";
+        document.querySelector("#status").textContent = "Compras concluídas voltaram para Minhas compras.";
+      });
+
+      document.querySelectorAll(".tab-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          activeTab = button.dataset.tab;
+          localStorage.setItem(tabStorageKey, activeTab);
+          render();
+          document.querySelector("#status").textContent = tabLabels[activeTab];
+        });
       });
 
       document.querySelector("#share-button").addEventListener("click", async () => {
