@@ -108,12 +108,12 @@ button {
 }
 
 .hero h1 {
-  max-width: 9ch;
+  max-width: 100%;
   margin: 0;
   font-family: var(--font-fraunces), Georgia, serif;
-  font-size: clamp(46px, 16vw, 86px);
+  font-size: clamp(40px, 13vw, 76px);
   font-weight: 750;
-  line-height: 0.9;
+  line-height: 0.95;
 }
 
 .hero p {
