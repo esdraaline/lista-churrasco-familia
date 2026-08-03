@@ -674,6 +674,10 @@
         background: rgba(255, 246, 232, 0.08);
       }
 
+      .bill-buttons .wide {
+        grid-column: 1 / -1;
+      }
+
       .summary-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -800,6 +804,10 @@
         background: rgba(255, 246, 232, 0.08);
       }
 
+      .actions .wide {
+        grid-column: 1 / -1;
+      }
+
       .status {
         min-height: 20px;
         margin: 8px 4px 0;
@@ -860,7 +868,7 @@
       <section class="progress-card" aria-label="Progresso da compra">
         <div>
           <span>Progresso</span>
-          <strong id="progress-label">0 de 14</strong>
+          <strong id="progress-label">0 de 5</strong>
         </div>
         <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
       </section>
@@ -902,7 +910,8 @@
 
       <div class="actions shopping-only" aria-label="Ações da lista">
         <button type="button" id="share-button">Compartilhar</button>
-        <button type="button" class="secondary" id="reset-button">Desmarcar concluídos</button>
+        <button type="button" id="export-list-image">Exportar imagem</button>
+        <button type="button" class="secondary wide" id="reset-button">Desmarcar concluídos</button>
       </div>
 
       <p class="status" id="status" role="status">
@@ -1102,6 +1111,283 @@
         });
       }
 
+      function formatFileName(value) {
+        return String(value || "rachides")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "")
+          .slice(0, 48) || "rachides";
+      }
+
+      function wrapCanvasText(context, text, maxWidth) {
+        const words = String(text || "").split(/\s+/).filter(Boolean);
+        const lines = [];
+        let line = "";
+
+        words.forEach((word) => {
+          const testLine = line ? `${line} ${word}` : word;
+          if (context.measureText(testLine).width <= maxWidth) {
+            line = testLine;
+            return;
+          }
+          if (line) lines.push(line);
+          line = word;
+        });
+
+        if (line) lines.push(line);
+        return lines.length ? lines : [""];
+      }
+
+      function measureExportCard(title, subtitle, sections) {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        const width = 1080;
+        const padding = 70;
+        const contentWidth = width - padding * 2;
+        let height = 96;
+
+        context.font = "800 62px Arial";
+        height += wrapCanvasText(context, title, contentWidth).length * 72;
+        context.font = "400 34px Arial";
+        height += wrapCanvasText(context, subtitle, contentWidth).length * 44 + 34;
+
+        sections.forEach((section) => {
+          height += 66;
+          const rows = section.rows.length ? section.rows : [{ primary: "Nada aqui agora.", secondary: "" }];
+          rows.forEach((row) => {
+            context.font = "700 34px Arial";
+            height += wrapCanvasText(context, row.primary, contentWidth - 112).length * 42;
+            if (row.secondary) {
+              context.font = "400 28px Arial";
+              height += wrapCanvasText(context, row.secondary, contentWidth - 112).length * 34;
+            }
+            height += 28;
+          });
+          height += 22;
+        });
+
+        return Math.max(900, height + 58);
+      }
+
+      function fillRoundedRect(context, x, y, width, height, radius) {
+        const safeRadius = Math.min(radius, width / 2, height / 2);
+        context.beginPath();
+        context.moveTo(x + safeRadius, y);
+        context.lineTo(x + width - safeRadius, y);
+        context.quadraticCurveTo(x + width, y, x + width, y + safeRadius);
+        context.lineTo(x + width, y + height - safeRadius);
+        context.quadraticCurveTo(x + width, y + height, x + width - safeRadius, y + height);
+        context.lineTo(x + safeRadius, y + height);
+        context.quadraticCurveTo(x, y + height, x, y + height - safeRadius);
+        context.lineTo(x, y + safeRadius);
+        context.quadraticCurveTo(x, y, x + safeRadius, y);
+        context.fill();
+      }
+
+      function createExportCard(title, subtitle, sections) {
+        const width = 1080;
+        const height = measureExportCard(title, subtitle, sections);
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext("2d");
+        const padding = 70;
+        const contentWidth = width - padding * 2;
+        let y = 76;
+
+        const gradient = context.createLinearGradient(0, 0, width, height);
+        gradient.addColorStop(0, "#23130f");
+        gradient.addColorStop(0.56, "#15100e");
+        gradient.addColorStop(1, "#102116");
+        context.fillStyle = gradient;
+        context.fillRect(0, 0, width, height);
+
+        context.fillStyle = "rgba(255, 106, 34, 0.2)";
+        context.beginPath();
+        context.arc(130, 96, 210, 0, Math.PI * 2);
+        context.fill();
+        context.fillStyle = "rgba(121, 212, 106, 0.14)";
+        context.beginPath();
+        context.arc(970, 190, 240, 0, Math.PI * 2);
+        context.fill();
+
+        context.fillStyle = "#ffd9bd";
+        context.font = "800 28px Arial";
+        context.fillText("RACHIDES ENTRE AMIGOS", padding, y);
+        y += 74;
+
+        context.fillStyle = "#fff6e8";
+        context.font = "800 62px Arial";
+        wrapCanvasText(context, title, contentWidth).forEach((line) => {
+          context.fillText(line, padding, y);
+          y += 72;
+        });
+
+        context.fillStyle = "#d8c5ac";
+        context.font = "400 34px Arial";
+        wrapCanvasText(context, subtitle, contentWidth).forEach((line) => {
+          context.fillText(line, padding, y);
+          y += 44;
+        });
+        y += 30;
+
+        sections.forEach((section) => {
+          context.fillStyle = section.color || "#ff6a22";
+          context.font = "800 34px Arial";
+          context.fillText(section.title.toUpperCase(), padding, y);
+          y += 48;
+
+          const rows = section.rows.length ? section.rows : [{ primary: "Nada aqui agora.", secondary: "" }];
+          rows.forEach((row) => {
+            const cardTop = y - 18;
+            context.fillStyle = "rgba(255, 246, 232, 0.08)";
+            fillRoundedRect(context, padding, cardTop, contentWidth, row.secondary ? 104 : 76, 24);
+
+            context.fillStyle = row.color || section.color || "#ff6a22";
+            context.font = "800 32px Arial";
+            context.fillText(row.mark || "•", padding + 28, y + 28);
+
+            const textOffset = String(row.mark || "").length > 1 ? 112 : 78;
+            context.fillStyle = "#fff6e8";
+            context.font = "700 34px Arial";
+            const primaryLines = wrapCanvasText(context, row.primary, contentWidth - 112);
+            primaryLines.forEach((line) => {
+              context.fillText(line, padding + textOffset, y + 25);
+              y += 42;
+            });
+
+            if (row.secondary) {
+              context.fillStyle = "#d8c5ac";
+              context.font = "400 28px Arial";
+              wrapCanvasText(context, row.secondary, contentWidth - 112).forEach((line) => {
+                context.fillText(line, padding + textOffset, y + 18);
+                y += 34;
+              });
+            }
+            y = Math.max(y + 26, cardTop + (row.secondary ? 122 : 94));
+          });
+          y += 10;
+        });
+
+        context.fillStyle = "#d8c5ac";
+        context.font = "400 24px Arial";
+        context.fillText("Gerado pelo site Rachides entre amigos", padding, height - 38);
+        return canvas;
+      }
+
+      function canvasToBlob(canvas) {
+        return new Promise((resolve) => canvas.toBlob(resolve, "image/png", 0.94));
+      }
+
+      async function shareOrDownloadCanvas(canvas, filename, title) {
+        const blob = await canvasToBlob(canvas);
+        if (!blob) throw new Error("Imagem vazia");
+        const file = new File([blob], filename, { type: "image/png" });
+
+        if (navigator.canShare?.({ files: [file] }) && navigator.share) {
+          try {
+            await navigator.share({ title, files: [file] });
+            return "shared";
+          } catch (error) {
+            if (error?.name === "AbortError") return "cancelled";
+          }
+        }
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        return "downloaded";
+      }
+
+      async function exportShoppingImage() {
+        const checked = items.filter((item) => item.checked);
+        const postponed = items.filter((item) => item.postponed);
+        const active = items.filter((item) => !item.checked && !item.postponed);
+        const title = getDisplayTitle();
+        const subtitle = `${checked.length} de ${items.length} comprados · ${active.length + postponed.length} faltando`;
+        const sections = [
+          {
+            title: "Para comprar",
+            color: "#ffbd8f",
+            rows: active.map((item) => ({ mark: "□", primary: item.name, secondary: item.qty })),
+          },
+          {
+            title: "Comprados",
+            color: "#9bd85f",
+            rows: checked.map((item) => ({ mark: "✓", primary: item.name, secondary: item.qty })),
+          },
+          {
+            title: "Adiados",
+            color: "#6fb7ff",
+            rows: postponed.map((item) => ({ mark: "↩", primary: item.name, secondary: item.qty })),
+          },
+        ];
+        const canvas = createExportCard(title, subtitle, sections);
+        return shareOrDownloadCanvas(canvas, `${formatFileName(title)}-compras.png`, title);
+      }
+
+      async function exportBillImage() {
+        const result = calculateBill();
+        const title = `Divisão - ${getDisplayTitle()}`;
+        const subtitle = `Total ${formatMoney(result.total)} · ${result.splitCount} pessoa(s)/família(s) · ${formatMoney(result.share)} por pessoa`;
+        const balanceRows = result.balances.map((participant) => {
+          const balanceText = participant.balance > 0.005
+            ? `tem a receber ${formatMoney(participant.balance)}`
+            : participant.balance < -0.005
+            ? `ainda deve ${formatMoney(Math.abs(participant.balance))}`
+            : "está certo na conta";
+          return {
+            mark: participant.balance > 0.005 ? "+" : participant.balance < -0.005 ? "-" : "✓",
+            primary: participant.displayName,
+            secondary: `Pagou ${formatMoney(participant.paidValue)} · ${balanceText}`,
+            color: participant.balance > 0.005 ? "#9bd85f" : participant.balance < -0.005 ? "#ffbd8f" : "#6fb7ff",
+          };
+        });
+        const settlementRows = result.settlements.map((settlement) => ({
+          mark: "R$",
+          primary: `${settlement.from} paga ${formatMoney(settlement.amount)}`,
+          secondary: `Para ${settlement.to}`,
+        }));
+        const sections = [
+          {
+            title: "Resumo",
+            color: "#f4bd37",
+            rows: [
+              { mark: "T", primary: "Total da conta", secondary: formatMoney(result.total) },
+              { mark: "P", primary: "Por pessoa/família", secondary: formatMoney(result.share) },
+              { mark: "N", primary: "Dividindo por", secondary: `${result.splitCount} pessoa(s)/família(s)` },
+              { mark: "S", primary: "Total pago informado", secondary: formatMoney(result.paidTotal) },
+            ],
+          },
+          {
+            title: "Quem pagou",
+            color: "#6fb7ff",
+            rows: balanceRows,
+          },
+          {
+            title: "Acerto sugerido",
+            color: "#9bd85f",
+            rows: settlementRows,
+          },
+        ];
+        if (result.missingPayers > 0) {
+          sections[0].rows.push({
+            mark: "!",
+            primary: "Sem nome na divisão",
+            secondary: `${result.missingPayers} pessoa(s)/família(s) entram na conta sem acerto nominal.`,
+          });
+        }
+        const canvas = createExportCard(title, subtitle, sections);
+        return shareOrDownloadCanvas(canvas, `${formatFileName(getDisplayTitle())}-divisao.png`, title);
+      }
+
       function calculateBill() {
         const participants = bill.participants.map((participant, index) => ({
           ...participant,
@@ -1268,7 +1554,8 @@
             <div class="settlement-list">${settlementsMarkup}</div>
             <div class="bill-buttons">
               <button type="button" id="copy-settlement">Copiar acerto</button>
-              <button type="button" class="secondary" id="clear-bill">Limpar divisão</button>
+              <button type="button" id="export-bill-image">Exportar imagem</button>
+              <button type="button" class="secondary wide" id="clear-bill">Limpar divisão</button>
             </div>
           </section>
         `;
@@ -1383,6 +1670,18 @@
             document.querySelector("#status").textContent = "Acerto copiado.";
           } catch {
             document.querySelector("#status").textContent = "Não consegui copiar agora.";
+          }
+        });
+        document.querySelector("#export-bill-image")?.addEventListener("click", async () => {
+          try {
+            const mode = await exportBillImage();
+            document.querySelector("#status").textContent = mode === "shared"
+              ? "Imagem da divisão compartilhada."
+              : mode === "cancelled"
+              ? "Compartilhamento cancelado."
+              : "Imagem da divisão baixada.";
+          } catch {
+            document.querySelector("#status").textContent = "Não consegui gerar a imagem da divisão.";
           }
         });
         document.querySelector("#clear-bill")?.addEventListener("click", () => {
@@ -1655,6 +1954,19 @@
           document.querySelector("#status").textContent = "Lista copiada.";
         } catch {
           document.querySelector("#status").textContent = "Não consegui compartilhar agora.";
+        }
+      });
+
+      document.querySelector("#export-list-image").addEventListener("click", async () => {
+        try {
+          const mode = await exportShoppingImage();
+          document.querySelector("#status").textContent = mode === "shared"
+            ? "Imagem da lista compartilhada."
+            : mode === "cancelled"
+            ? "Compartilhamento cancelado."
+            : "Imagem da lista baixada.";
+        } catch {
+          document.querySelector("#status").textContent = "Não consegui gerar a imagem da lista.";
         }
       });
 
