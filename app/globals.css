@@ -355,7 +355,10 @@ button {
 
 .item {
   display: grid;
-  grid-template-columns: 28px 30px minmax(0, 1fr) auto;
+  grid-template-columns: 28px 30px minmax(0, 1fr) 44px;
+  grid-template-areas:
+    "check icon name action"
+    "check icon qty action";
   align-items: center;
   gap: 10px;
   width: 100%;
@@ -375,6 +378,7 @@ button {
 }
 
 .check {
+  grid-area: check;
   display: grid;
   place-items: center;
   width: 26px;
@@ -388,20 +392,26 @@ button {
 }
 
 .item__icon {
+  grid-area: icon;
   font-size: 21px;
   text-align: center;
 }
 
 .item__name {
+  grid-area: name;
   min-width: 0;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
   font-size: 16px;
   font-weight: 750;
 }
 
 .item__qty {
-  max-width: 112px;
-  overflow-wrap: anywhere;
+  grid-area: qty;
+  justify-self: start;
+  max-width: 100%;
+  overflow-wrap: normal;
+  word-break: normal;
   border-radius: 999px;
   padding: 6px 10px;
   color: var(--accent);
@@ -409,6 +419,10 @@ button {
   font-size: 13px;
   font-weight: 900;
   text-align: center;
+}
+
+.item > span[aria-hidden="true"]:not([class]) {
+  grid-area: action;
 }
 
 .item--checked .check {

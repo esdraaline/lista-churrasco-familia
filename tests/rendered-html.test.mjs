@@ -66,6 +66,8 @@ test("GitHub Pages build contains grocery status tabs", async () => {
   assert.match(html, /Fermento/);
   assert.match(html, /Coco ralado/);
   assert.match(html, /Manteiga sem sal/);
+  assert.match(html, /grid-template-areas:\s*"check icon name action"\s*"check icon qty action"/);
+  assert.match(html, /word-break: normal/);
   assert.match(html, /Exportar imagem/);
   assert.match(html, /exportShoppingImage/);
   assert.match(html, /exportBillImage/);
