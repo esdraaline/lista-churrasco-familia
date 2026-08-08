@@ -111,6 +111,12 @@ export default function Home() {
   useEffect(() => {
     const saved = window.localStorage.getItem(storageKey);
     const savedEventTitle = window.localStorage.getItem(eventStorageKey);
+    // Hidratação a partir do localStorage precisa acontecer depois da montagem:
+    // este componente é pré-renderizado no servidor, que não tem acesso ao
+    // localStorage. Ler no inicializador do useState faria o HTML do servidor
+    // (vazio) divergir do primeiro render do cliente (valor salvo), causando
+    // erro de hidratação no input controlado abaixo.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEventTitle(savedEventTitle || defaultEventTitle);
     if (!saved) return;
 
